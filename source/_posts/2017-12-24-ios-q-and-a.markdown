@@ -5,3 +5,70 @@ date: 2017-12-24 14:46:28 +0800
 comments: true
 categories: 
 ---
+
+### Q1.通知是同步还是异步？
+
+ - A1:通知是同步的。测试如下：
+ 
+ ```
+ [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print1:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print2:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print3:) name:@"GCDNotification" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GCDNotification" object:nil];
+        NSLog(@"发出通知----%@",[NSThread currentThread]);
+    
+    - (void)print:(NSNotification *)notif{
+        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+        
+        sleep(10);
+}
+// log 
+2017-12-24 15:07:58.552422+0800 KVOTest[7306:368524] 0收到通知----<NSThread: 0x604000066840>{number = 1, name = main}
+2017-12-24 15:08:08.553940+0800 KVOTest[7306:368524] 1收到通知----<NSThread: 0x604000066840>{number = 1, name = main}
+2017-12-24 15:08:18.555010+0800 KVOTest[7306:368524] 2收到通知----<NSThread: 0x604000066840>{number = 1, name = main}
+2017-12-24 15:08:28.557206+0800 KVOTest[7306:368524] 3收到通知----<NSThread: 0x604000066840>{number = 1, name = main}
+2017-12-24 15:08:38.559301+0800 KVOTest[7306:368524] 发出通知----<NSThread: 0x604000066840>{number = 1, name = main}
+ ```
+ 
+ - 模拟实现异步接收的效果如下：
+ 
+ ```
+- (void)print:(NSNotification *)notif{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+        
+        sleep(10);
+    });
+}
+// log
+2017-12-24 15:11:09.680454+0800 KVOTest[7325:373178] 2收到通知----<NSThread: 0x60000026c880>{number = 5, name = (null)}
+2017-12-24 15:11:09.680454+0800 KVOTest[7325:373056] 3收到通知----<NSThread: 0x60400006e800>{number = 1, name = main}
+2017-12-24 15:11:09.680488+0800 KVOTest[7325:373176] 0收到通知----<NSThread: 0x60000026c040>{number = 3, name = (null)}
+2017-12-24 15:11:09.680491+0800 KVOTest[7325:373175] 1收到通知----<NSThread: 0x60400027d440>{number = 4, name = (null)}
+2017-12-24 15:11:19.682627+0800 KVOTest[7325:373056] 发出通知----<NSThread: 0x60400006e800>{number = 1, name = main}
+```
+ 
+
+### Q2.UIView和CALayer的父类及关系？
+ - UIView的父类是UIResponse，可以响应事件和手势
+ - CALyer的父类是NSObject，不可以响应事件和手势，更偏重内容绘制
+ - 每个UIView都有自己的CALayer，UIView的frame只是返回CALayer的frame
+ - 在 View显示的时候，UIView 做为 Layer 的 CALayerDelegate
+
+### Q3.手动设置UIView的bounds会怎样？
+ - [UIview setBounds:]改变当前view相对于子view的坐标原点。
+ 
+ ```
+ UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0,0, 375, 100)];
+    [view1 setBackgroundColor:[UIColor grayColor]];
+    [self.view addSubview:view1];
+    
+    // 改变后，view1的原点在（0，-100）位置
+    self.view.bounds = CGRectMake(0, -100, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
+ ```
+ 
+ {% img /images/noSetBounds.png %}
+ {% img /images/setBounds.png %}
+
