@@ -72,3 +72,60 @@ categories:
  {% img /images/noSetBounds.png %}
  {% img /images/setBounds.png %}
 
+### Q4.在xib中创建一个全view大小的tableview，会不会被导航栏遮挡？为什么？
+ - 正常情况下，导航栏的透明度可影响视图是否被遮挡
+ 
+ ```
+ // 设置不透明，self.view在导航栏下面展示，不遮挡
+ // 否则，self.view为全屏展示，会被导航栏遮挡
+ self.navigationController.navigationBar.translucent = NO;
+ ```
+ - 在不考虑以上透明度的影响，tableview不被遮挡的同时还需要滑动时在不透明的导航栏中透出
+ 
+ ```
+  // iOS10 以上系统自动设置，以下需要手动设置
+  [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+ ```
+
+### Q5.动态库和静态库的区别？系统库属于哪种？
+ - 静态库以.a和.framework作为文件后缀名，在使用时会被完全的copy一份到文件中，多次使用就包含多次拷贝文件，平时使用的第三方库大部分都是静态库，会使app的体积变大。
+ - 动态库以.framework和.tbd(之前叫.dylib)作为文件后缀名，在使用时不会拷贝，由系统动态加载到内存中，只加载一次，多次使用可节省空间。如系统库UIKit等都是动态库。
+ - 动态库制作可以包含其他静态库(.a/.framework)
+ - 静态库制作可以包含其他静态库(.a/.framework）
+ 
+ 
+### Q6.为什么加载xib文件比纯代码耗时？
+ - xib实质是xml文件，系统先要解析xml文件中的view及参数属性。
+ 
+### Q7.podfile.lock的作用？
+ - 在使用命令【pod install】以后会生成podfile.lock文件，这个文件中保存已经安装的Pods依赖库的版本。
+ - 在多人协作时，特别是在podfile文件中没有指定依赖版本号时，如果有podfile.lock文件，其他人在执行【pod install】时就会和最开始的用户保持版本一致。如果没有podfile.lock文件，可能更新出不同的版本。所以podfile.lock需要加入版本管理。
+ 
+ ```
+ // podfile 
+ platform :ios, '9.0'
+def shared_pods
+	pod 'FMDB' // 不指定版本，获取最新版本
+end
+target 'LittleNotes' do 
+	shared_pods
+end
+target 'LittleNotesWidget' do
+	shared_pods
+end
+ ```
+ 
+ ```
+ //podfile.lock
+ PODS:
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
+DEPENDENCIES:
+  - FMDB
+SPEC CHECKSUMS:
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+PODFILE CHECKSUM: f5e7b7c51ca371b02aa28c158108e5f9ccdf3033
+COCOAPODS: 1.3.1
+ ```
+
