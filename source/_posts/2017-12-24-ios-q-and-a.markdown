@@ -129,3 +129,106 @@ PODFILE CHECKSUM: f5e7b7c51ca371b02aa28c158108e5f9ccdf3033
 COCOAPODS: 1.3.1
  ```
 
+### Q8.如何优化应用启动时间？
+ - 冷启动：启动的应用不在后台运行，系统需要重新创建一个新进程分配给应用。App启动时间是从手指点击到调用applicationWillFinishLaunching结束
+ - 热启动：应用已经运行，但是被后台挂起，比如按了home键。App的启动时间是从手指点击到调用applicationWillEnterForeground。
+ - 测量应用启动时间：Xcode - Edit scheme - Auguments 配置环境变量DYLD_PRINT_STATISTICS为1.
+
+ ```
+ Total pre-main time:  99.69 milliseconds (100.0%)
+         dylib loading time:  39.31 milliseconds (39.4%)
+        rebase/binding time:   7.57 milliseconds (7.5%)
+            ObjC setup time:  10.25 milliseconds (10.2%)
+           initializer time:  42.39 milliseconds (42.5%)
+           slowest intializers :
+             libSystem.B.dylib :  11.93 milliseconds (11.9%)
+   libBacktraceRecording.dylib :   7.14 milliseconds (7.1%)
+    libMainThreadChecker.dylib :  17.24 milliseconds (17.2%)
+ ```
+ 影响启动时间因素：
+  - 动态库加载时间。一般应用会加载 100 到 400 个 dylib 文件，但大部分都是系统 dylib，它们会被预先计算和缓存起来，加载速度很快。但是另外集成的动态库应该尽量减少动态库的数量，或者将多个动态库合成一个。尽量保证将App现有的非系统级的动态库个数保证在6个以内。
+  - 指针修正时间。减少指针数量。就是减少App中的类、category、selector的数量。
+  - 初始化时间：使用+initialize代替+load方法，不要使用__attribute__((constructor)) 将方法显式标记为初始化器
+  
+  ```
+  load -> attribute((constructor)) -> main -> initialize
+  + (void)initialize{
+  	// 在类被第一次使用的时候调用
+  }
+  + (void)load{
+    // 在类被运行时加载时调用
+  }
+  __attribute((constructor)) void beforeMain(){
+  //是GCC的扩展语法（黑魔法），由它修饰过的函数，会在main函数之前调用
+  }
+   
+  ```
+  
+### Q9.dSYM是什么文件，有什么作用？
+ - 每次编译build/Archive App时，会生成一个同名的dSYM文件，dSYM 是保存 16 进制函数地址映射信息的中转文件.
+ - .dSYM中真正保存符号表数据的是DWARF文件。DWARF（DebuggingWith Arbitrary Record Formats），是ELF和Mach-O等文件格式中用来存储和处理调试信息的标准格式。
+ - .dSYM文件主要用于在发生崩溃时，根据崩溃内存地址查找到具体的崩溃位置。
+ 
+ - 1.首先必须保.dSYM和.app文件是对应的
+ 
+ ```
+ // 通过读取文件中的UUID
+ dwarfdump --uuid xx.app/xx (xx代表你的项目名)
+ dwarfdump --uuid xx.app.dSYM;
+ 
+ ```
+ - 2.崩溃错误信息
+ 
+ ```
+ // 一般崩溃信息格式
+appName 0x000000010011496c appName + 379244
+
+ // 0x000000010011496c:崩溃内存地址，十六进制
+ 379244：地址偏移量，十进制
+```
+
+ - 3.定位
+ 
+ ```
+ // 终端运行
+ atos -arch arm64（1） -o "dSYM文件路径（2）" -l 0x00000001000B8000（3） 0x000000010011496c
+ 
+ // 1.处理器指令集，真机64位处理器为arm64，32位处理器为armv7或armv7s
+ // 2.将dSYM文件-右键-显示包内容，定位到DWARF目录下的app同名文件，如：/Users/zm/Desktop/ywh_dSYM/2.1.1/uclture.app.dSYM/Contents/Resources/DWARF/玩事
+ // 3.初始内存地址：将十六进制崩溃内存地址转化为十进制后，减去地址偏移量，获得十进制内存初始地址，再转化成十六进制
+ 如：0x000000010011496c（16）= 4296100204（10）
+ 初始地址（10） = 4296100204 - 379244 = 4295720960
+ 4295720960（10） = 1000B8000（16）
+ 
+ // 运行结果
+ -[HonorChatViewController tableView:heightForRowAtIndexPath:] (in ) (HonorChatViewController.m:193)
+ ```
+ 
+### Q9.关于设置frame和autolayout布局的区别
+ - 手动设置frame，虽然也可以设置相对位置，不过需要大量的计算。
+ - 设置autolayout不需要自己去计算
+ - 直接设置frame在屏幕旋转等事件发生时需要重新适配计算位置，autolayout不需要
+ 
+### Q10.怎么避免NSTimer的循环引用？
+ - 1.不重复timer
+ 
+ ```
+  _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:NO];
+  // timer在执行一次selector后自动调用invalidate方法，不会造成循环应用
+ ```
+  - 2.重复执行的timer
+  
+ ```
+ _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:YES];
+ // 重复的timer必须手动执行invalidate方法，且不能再dealloc中执行，因为timer强引用self，导致self不能释放，不会触发dealloc
+ ```
+  - 3. invalidate方法的作用
+  
+  ```
+  Stops the timer from ever firing again and requests its removal from its run loop.
+This method is the only way to remove a timer from an NSRunLoop object. The NSRunLoop object removes its strong reference to the timer, either just before the invalidate method returns or at some later point.
+If it was configured with target and user info objects, the receiver removes its strong references to those objects as well.
+停止计时器再次触发，并请求将其从运行循环中删除。
+该方法是从NSRunLoop对象中删除计时器的惟一方法。NSRunLoop对象删除了它对计时器的强引用，或者是在无效的方法返回之前，或者在稍后的某个时间点。
+如果它配置了目标和用户信息对象，接收者也会删除对这些对象的强引用。
+  ```
