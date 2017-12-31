@@ -35,7 +35,7 @@ categories:
  - 模拟实现异步接收的效果如下：
  
  ```
-- (void)print:(NSNotification *)notif{
+	- (void)print:(NSNotification *)notif{
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSLog(@"0收到通知----%@",[NSThread currentThread]);
         
@@ -50,7 +50,6 @@ categories:
 2017-12-24 15:11:19.682627+0800 KVOTest[7325:373056] 发出通知----<NSThread: 0x60400006e800>{number = 1, name = main}
 ```
  
-
 ### Q2.UIView和CALayer的父类及关系？
  - UIView的父类是UIResponse，可以响应事件和手势
  - CALyer的父类是NSObject，不可以响应事件和手势，更偏重内容绘制
@@ -232,3 +231,17 @@ If it was configured with target and user info objects, the receiver removes its
 该方法是从NSRunLoop对象中删除计时器的惟一方法。NSRunLoop对象删除了它对计时器的强引用，或者是在无效的方法返回之前，或者在稍后的某个时间点。
 如果它配置了目标和用户信息对象，接收者也会删除对这些对象的强引用。
   ```
+  
+### Q11.在block中使用_xxx的方式使用属性会不会循环引用？
+ - 会产生循环引用
+ - _name和self.name的区别是self.name直接调用属性的get方法，
+ - _name是调用类的实例变量。都会传入self被block强引用。
+
+```
+self.block = ^(id target) {
+        _name = @"weekend";
+    };
+    
+    self.block(self);
+```
+
