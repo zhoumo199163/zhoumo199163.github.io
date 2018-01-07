@@ -244,3 +244,113 @@ self.block = ^(id target) {
     self.block(self);
 ```
 
+### Q12.设计一个方法查询指定view上所有相同类型的子控件
+ - 1.需要想到view的子view的子view...中也要查找
+ - 2.自定义继承的控件也需要查找
+ 
+```
+// 1.使用递归查找子view
+// 2.自定义控件使用isKindOfClass
+- (NSInteger)searchSubviewsCountByType:(NSString *)type atView:(UIView *)view{
+   __block NSInteger count = 0;
+    NSArray <UIView*> *subviews = view.subviews;
+    [subviews enumerateObjectsUsingBlock:^(UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSInteger subCount = 0;
+        if(obj.subviews.count != 0){
+            subCount = subCount + [self searchSubviewsCountByType:type atView:obj];
+        }else{
+            Class targetClass = NSClassFromString(type);
+            if([obj isKindOfClass:targetClass]){
+                subCount++;
+            }
+        }
+        count = count + subCount;
+    }];
+    return count;
+}
+
+// isKindOfClass:返回一个布尔值，该值表示接收者是给定类的实例还是继承该类的任何类的实例。
+Returns a Boolean value that indicates whether the receiver is an instance of given class or an instance of any class that inherits from that class.
+// isMemberOfClass:返回一个布尔值，该值表示接收者是否为给定类的实例。
+Returns a Boolean value that indicates whether the receiver is an instance of a given class.
+```
+
+### Q13.在主线程中新建一个串行队列，同步执行任务，任务在哪个线程中执行？为什么？
+ - 任务执行在主线程
+ - 串行队列：队列中的任务按照顺序执行
+ - 并行队列：队列中的任务同时执行
+ - 同步：阻塞当前线程，直到任务执行完毕
+ - 异步：不阻塞当前线程
+
+```
+// 同步串行：阻塞当前主线程，并顺序执行。不同的任务队列不会发生死锁。
+ dispatch_sync(dispatch_queue_create("serial", DISPATCH_QUEUE_SERIAL), ^{
+        NSLog(@"currentThread:%@",[NSThread currentThread]);
+    });
+//log:
+currentThread:<NSThread: 0x604000076c40>{number = 1, name = main}
+
+// 死锁：当前队列等待block中的任务执行完毕，block中任务阻塞主线程等待主线程队列中的任务执行完毕。
+dispatch_sync(dispatch_get_main_queue(), ^{
+        NSLog(@"currentThread:%@",[NSThread currentThread]);
+    });
+```
+
+### Q14.在dealloc中写以下方法会输出什么？
+```
+- (void)dealloc{
+    __weak typeof(self) weakSelf = self;
+    NSLog(@"weakSelf:%@",weakSelf);
+}
+```
+ - 运行崩溃：objc[1653]: Cannot form weak reference to instance (0x7fc3a8c0c920) of class TestViewController. It is possible that this object was over-released, or is in the process of deallocation.
+ - dealloc:释放被接收方占用的内存。
+接收到接收方的后续消息可能会产生一个错误，指示消息被发送到一个回收对象(前提是该回收的内存还没有被重用)。
+ - 当前self在回收过程中，不允许弱引用
+
+### Q15.怎么在当前页面关闭的时候取消还没有下载完成的任务？
+ - 1.NSOperation
+ 
+ ```
+ // 1.添加任务到队列
+  self.operationQueue = [NSOperationQueue new];
+    self.operationQueue.maxConcurrentOperationCount = 1;
+    for(int i = 0;i<10;i++){
+        [self.operationQueue addOperationWithBlock:^{
+            sleep(1);
+            NSLog(@"i == %d",i);
+        }];
+    }
+  // 2. 挂起队列，不能暂停正在执行的任务
+   [self.operationQueue setSuspended:YES];
+  // 3. 取消挂起
+  [self.operationQueue setSuspended:No];
+  // 4.取消全部任务
+    [self.operationQueue cancelAllOperations];
+   // 5.取消单个任务
+    NSBlockOperation *blockOp = [NSBlockOperation blockOperationWithBlock:^{
+        // do something
+    }];
+    [self.operationQueue addOperation:blockOp];
+    [blockOp cancel];
+ ```
+ 
+ - 2.GCD
+ 
+ ```
+ // 1.添加任务到队列
+  dispatch_block_t gcdBlcok = dispatch_block_create(0, ^{
+        NSLog(@"to do something");
+    });
+    dispatch_async(self.queue, gcdBlcok);
+  // 2.取消任务
+  dispatch_block_cancel(gcdBlcok);
+  OR dispatch_cancel(gcdBlcok);
+  // 3.挂起队列
+  dispatch_suspend(self.queue);
+  // 4.取消挂起
+  dispatch_resume(self.queue);
+ ```
+
+- 3.页面关闭时，取消队列中还没有开始的任务。如果使用GCD需要将任务单独生成一个dispatch_block_t对象，如果是NSOperation，直接调用
+cancelAllOperations。
