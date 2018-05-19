@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>The Weekend Blog</title>
+  <title>iOS_Q&amp;A - The Weekend Blog</title>
   <meta name="author" content="Weekend">
 
   
-  <meta name="description" content="前言 苹果对于提交审核的App中可执行文件有明确的大小限制，查看应用的可执行文件大小就需要利用LinkMap文件。 1.如何生成LinkMap文件 1).在工程的Build Setting中找到Write Link Map File并打开开关 2).在debug或者release下编译工程 3). &hellip;">
+  <meta name="description" content="Q1.通知是同步还是异步？ A1:通知是同步的。测试如下： [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print:) name:@"GCDNotification" object:nil &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://zhoumo199163.github.io/">
+  <link rel="canonical" href="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="The Weekend Blog" type="application/atom+xml">
@@ -63,326 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2018/05/19/linkmap/">LinkMap</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2018-05-19T23:13:19+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>11:13 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>前言</h3>
-
-<p>  苹果对于提交审核的App中可执行文件有明确的大小限制，查看应用的可执行文件大小就需要利用LinkMap文件。
-   <img src="/images/limitSize.jpg"></p>
-
-<h3>1.如何生成LinkMap文件</h3>
-
-<h4>1).在工程的Build Setting中找到Write Link Map File并打开开关</h4>
-
-<p><img src="/images/openLinkMap.jpg"></p>
-
-<h4>2).在debug或者release下编译工程</h4>
-
-<h4>3).先找到编译后的app文件，向上两级的Products同目录下有Intermediates.noindex文件夹，在该文件夹下能够找到名称为项目名-LinkMap-normal-x86_64.txt的文件(x86_64是架构，如果是真机，可能为arm64或者其他)</h4>
-
-<p><img src="/images/linkMapPath.jpg"></p>
-
-<h3>2.LinkMap有什么作用</h3>
-
-<p>LinKMap文件分为四个部分：</p>
-
-<h4>1：# Path:当前LinkMap编译的路径</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Path: /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Products/Debug-iphonesimulator/LinkMapTest.app/LinkMapTest</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>2：# Arch:当前编译的系统架构</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Arch: x86_64</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>3：# Object files:编译的所有文件</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Object files:
-</span><span class='line'>[  0] linker synthesized
-</span><span class='line'>[  1] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/LinkMapTest.app.xcent
-</span><span class='line'>[  2] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/ViewController.o
-</span><span class='line'>[  3] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/main.o
-</span><span class='line'>[  4] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/AppDelegate.o
-</span><span class='line'>[  5] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks//Foundation.framework/Foundation.tbd
-</span><span class='line'>[  6] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/usr/lib/libobjc.tbd
-</span><span class='line'>[  7] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks//UIKit.framework/UIKit.tbd</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>4：# Sections:</h4>
-
-<p>段表标题中列举出了地址，大小，段类型以及段名称。<br/>
-数据类型分为两种不同类型，一种是<strong>TEXT，用于保存程序代码段经过编译后的机器码，另外一种是</strong>DATA用于保存诸如全局变量或者局部变量。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Sections:
-</span><span class='line'># Address Size        Segment Section
-</span><span class='line'>0x100001590   0x00000453  __TEXT  __text
-</span><span class='line'>0x1000019E4   0x00000036  __TEXT  __stubs
-</span><span class='line'>0x100001A1C   0x0000006A  __TEXT  __stub_helper
-</span><span class='line'>0x100001A86   0x00000A70  __TEXT  __objc_methname
-</span><span class='line'>0x1000024F6   0x0000003C  __TEXT  __objc_classname
-</span><span class='line'>0x100002532   0x00000878  __TEXT  __objc_methtype
-</span><span class='line'>0x100002DAA   0x0000007A  __TEXT  __cstring
-</span><span class='line'>0x100002E24   0x00000186  __TEXT  __entitlements
-</span><span class='line'>0x100002FAC   0x00000048  __TEXT  __unwind_info
-</span><span class='line'>0x100003000   0x00000010  __DATA  __nl_symbol_ptr
-</span><span class='line'>0x100003010   0x00000048  __DATA  __la_symbol_ptr
-</span><span class='line'>0x100003058   0x00000010  __DATA  __objc_classlist
-</span><span class='line'>0x100003068   0x00000010  __DATA  __objc_protolist
-</span><span class='line'>0x100003078   0x00000008  __DATA  __objc_imageinfo
-</span><span class='line'>0x100003080   0x00000C48  __DATA  __objc_const
-</span><span class='line'>0x100003CC8   0x00000030  __DATA  __objc_selrefs
-</span><span class='line'>0x100003CF8   0x00000008  __DATA  __objc_classrefs
-</span><span class='line'>0x100003D00   0x00000008  __DATA  __objc_superrefs
-</span><span class='line'>0x100003D08   0x00000008  __DATA  __objc_ivar
-</span><span class='line'>0x100003D10   0x000000A0  __DATA  __objc_data
-</span><span class='line'>0x100003DB0   0x000000C0  __DATA  __data</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>5：# Symbols:文件中每一个方法的大小</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Symbols:
-</span><span class='line'># Address Size        File  Name
-</span><span class='line'>0x100001590   0x00000040  [  2] -[ViewController viewDidLoad]
-</span><span class='line'>0x1000015D0   0x00000050  [  2] -[ViewController viewDidAppear:]
-</span><span class='line'>0x100001620   0x00000050  [  2] -[ViewController viewWillAppear:]
-</span><span class='line'>0x100001670   0x00000050  [  2] -[ViewController viewDidDisappear:]
-</span><span class='line'>0x1000016C0   0x0000003C  [  2] -[ViewController didReceiveMemoryWarning]
-</span><span class='line'>0x100001700   0x00000090  [  3] _main
-</span><span class='line'>0x100001790   0x00000080  [  4] -[AppDelegate application:didFinishLaunchingWithOptions:]
-</span><span class='line'>0x100001810   0x00000040  [  4] -[AppDelegate applicationWillResignActive:]
-</span><span class='line'>0x100001850   0x00000040  [  4] -[AppDelegate applicationDidEnterBackground:]
-</span><span class='line'>0x100001890   0x00000040  [  4] -[AppDelegate applicationWillEnterForeground:]
-</span><span class='line'>0x1000018D0   0x00000040  [  4] -[AppDelegate applicationDidBecomeActive:]
-</span><span class='line'>0x100001910   0x00000040  [  4] -[AppDelegate applicationWillTerminate:]
-</span><span class='line'>0x100001950   0x00000020  [  4] -[AppDelegate window]
-</span><span class='line'>0x100001970   0x00000040  [  4] -[AppDelegate setWindow:]
-</span><span class='line'>0x1000019B0   0x00000033  [  4] -[AppDelegate .cxx_destruct]
-</span><span class='line'>···</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3.如何减少库大小</h3>
-
-<p>除了第三方的库以外，我们还能对自己的代码做些什么？</p>
-
-<h4>1）注释或删除空方法和没有调用的方法</h4>
-
-<p>如上文分析，类中存在的方法就会被计算大小，无论是否调用。所以可以删除类中 如:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewWillAppear:(BOOL)animated{
-</span><span class='line'>    [super viewWillAppear:animated];
-</span><span class='line'>}
-</span><span class='line'>- (void)viewDidDisappear:(BOOL)animated{
-</span><span class='line'>    [super viewDidDisappear:animated];
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>多加了两个空方法的大小对比如下,虽然空方法占用的很少，但是如果数量比较多还是很可观。
-<img src="/images/compare1.jpg"></p>
-
-<h4>2）比较去重</h4>
-
-<p>分析过滤项目中的重复代码。通过整合减少代码量。</p>
-
-<p>介绍一种去重的方法，使用PMD去重：<br/>
-1.下载：<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a><br/>
-2.cd 到bin目录中<br/>
-3.在终端输入</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>./run.sh cpd --language ObjectiveC --minimum-tokens 100 --files /Users/zhoumo1/Desktop/LinkMap/LinkMapTest/LinkMapTest &gt; /Users/zhoumo1/Desktop/check.txt </span></code></pre></td></tr></table></div></figure>
-
-
-<p>4.查看结果~完美</p>
-
-<h4>3）升级最低版本||重构</h4>
-
-<p>这没什么好说的，iOS9已经支持到500M，如果实在不能删减，升级最低支持版本是最有效的。</p>
-
-<p>重构风险较大，并且重构后也不一定会小很多，不支持。</p>
-
-<h3>4.LinkMap比对</h3>
-
-<p>为了方便查看做了以上减少工作后的结果如何，于是写了一个简单的Mac应用，主要功能是对比两份LinkMap文件。</p>
-
-<p>git地址：<a href="https://github.com/zhoumo199163/compareLinkMap">https://github.com/zhoumo199163/compareLinkMap</a></p>
-
-<p>如果觉得对你有用，欢迎star~</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-12-31T21:59:25+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2017</span></span> <span class='time'>9:59 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>1.找到字符串中最长无重复子串</h3>
-
-<ul>
-<li>例如aabbc，最长无重复子串abc，长度3；abcd，长度4；</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 思路：
-</span><span class='line'>// 1.先申请一个字典，key是每一个字符，value是字符上一次出现的位置
-</span><span class='line'>// 2.pre：该字符上次出现的位置
-</span><span class='line'>// 3.cur:当前位置和上次出现位置的距离
-</span><span class='line'>// 4.len:最长距离
-</span><span class='line'>- (void)maxUniqu:(NSString *)string{
-</span><span class='line'>    NSMutableDictionary *nums = [NSMutableDictionary new];
-</span><span class='line'>    NSArray  *array = [string componentsSeparatedByString:@","];
-</span><span class='line'>    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-</span><span class='line'>        nums[obj] = @(-1);
-</span><span class='line'>    }];
-</span><span class='line'>    
-</span><span class='line'>   __block int pre = -1;
-</span><span class='line'>   __block int len = 0;
-</span><span class='line'>   __block int cur = 0;
-</span><span class='line'>    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-</span><span class='line'>        pre = MAX(pre, [nums[obj] intValue]);
-</span><span class='line'>        cur = idx - pre;
-</span><span class='line'>        len = MAX(len, cur);
-</span><span class='line'>        nums[obj] = @(idx);
-</span><span class='line'>        NSLog(@"\nobj:%@\npre:%d\ncur:%d\nlen:%d\nnums:%@",obj,pre,cur,len,nums);
-</span><span class='line'>    }];
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2017/12/24/ios-q-and-a/">iOS_Q&amp;A</a></h1>
+      <h1 class="entry-title">iOS_Q&amp;A</h1>
     
     
       <p class="meta">
@@ -398,7 +84,7 @@
   </header>
 
 
-  <div class="entry-content"><h3>Q1.通知是同步还是异步？</h3>
+<div class="entry-content"><h3>Q1.通知是同步还是异步？</h3>
 
 <ul>
 <li>A1:通知是同步的。测试如下：</li>
@@ -899,18 +585,46 @@ cancelAllOperations。</li>
 </ul>
 
 </div>
-  
-  
 
 
-    </article>
+  <footer>
+    <p class="meta">
+      
   
-  <div class="pagination">
+
+<span class="byline author vcard">Posted by <span class="fn">Weekend</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-12-24T14:46:28+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>2:46 pm</span></time>
+      
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/" data-via="" data-counturl="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/" title="Next Post: 算法和数据结构">算法和数据结构 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -938,6 +652,7 @@ cancelAllOperations。</li>
 
   
 </aside>
+
 
     </div>
   </div>
