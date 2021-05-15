@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>React学习笔记 - The Weekend Blog</title>
+  <meta name="author" content="Weekend">
+
+  
+  <meta name="description" content="### 入门教程 - 状态提升：当你遇到需要同时获取多个子组件数据，或者两个组件之间需要相互通讯的情况时，需要把子组件的 state 数据提升至其共同的父组件当中保存。之后父组件可以通过 props 将状态数据传递到子组件当中。这样应用当中所有组件的状态数据就能够更方便地同步共享了。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhoumo199163.github.io/blog/2021/05/15/reactxue-xi-bi-ji/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Weekend Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Weekend Blog</a></h1>
+  
+    <h2>I hope it will continue to be updated</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhoumo199163.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">React学习笔记</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-05-15T20:16:06+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2021</span></span> <span class='time'>8:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p> ### 入门教程
+ - 状态提升：当你遇到需要同时获取多个子组件数据，或者两个组件之间需要相互通讯的情况时，需要把子组件的 state 数据提升至其共同的父组件当中保存。之后父组件可以通过 props 将状态数据传递到子组件当中。这样应用当中所有组件的状态数据就能够更方便地同步共享了。</p>
+
+<ul>
+<li><p>为了提高可读性，我们把返回的 React 元素拆分成了多行，同时在最外层加了小括号，这样 JavaScript 解析的时候就不会在 return 的后面自动插入一个分号从而破坏代码结构了。</p></li>
+<li><p>在 React 中，有一个命名规范，通常会将代表事件的监听 prop 命名为 on[Event]，将处理事件的监听方法命名为 handle[Event] 这样的格式。</p></li>
+<li><p>concat() 方法可能与你比较熟悉的 push() 方法不太一样，它并不会改变原数组，所以我们推荐使用 concat()</p></li>
+</ul>
+
+
+<p> ### KEY
+ - 每当一个列表重新渲染时，React 会根据每一项列表元素的 key 来检索上一次渲染时与每个 key 所匹配的列表项。如果 React 发现当前的列表有一个之前不存在的 key，那么就会创建出一个新的组件。如果 React 发现和之前对比少了一个 key，那么就会销毁之前对应的组件。如果一个组件的 key 发生了变化，这个组件会被销毁，然后使用新的 state 重新创建一份。
+ - key 是 React 中一个特殊的保留属性（还有一个是 ref，拥有更高级的特性）。当 React 元素被创建出来的时候，React 会提取出 key 属性，然后把 key 直接存储在返回的元素上。虽然 key 看起来好像是 props 中的一个，但是你不能通过 this.props.key 来获取 key。React 会通过 key 来自动判断哪些组件需要更新。组件是不能访问到它的 key 的。
+ - 我们强烈推荐，每次只要你构建动态列表的时候，都要指定一个合适的 key。如果你没有找到一个合适的 key，那么你就需要考虑重新整理你的数据结构了，这样才能有合适的 key。
+ ### 函数组件
+ - 如果你想写的组件只包含一个 render 方法，并且不包含 state，那么使用函数组件就会更简单。我们不需要定义一个继承于 React.Component 的类，我们可以定义一个函数，这个函数接收 props 作为参数，然后返回需要渲染的元素。函数组件写起来并不像 class 组件那么繁琐，很多组件都可以使用函数组件来写。</p>
+
+<p> 定义组件最简单的方式就是编写 JavaScript 函数：</p>
+
+<pre><code class="`"> function Welcome(props) {
+    return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+}
+￼ES6：
+class Welcome extends React.Component {
+    render() {
+        return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
+    }
+}
+注意： 组件名称必须以大写字母开头。
+</code></pre>
+
+<p> ### Props的只读性</p>
+
+<pre><code class="`"> function sum(a, b) {
+    return a + b;
+}
+</code></pre>
+
+<ul>
+<li>这样的函数被称为“纯函数”，因为该函数不会尝试更改入参，且多次调用下相同的入参始终返回相同的结果。
+相反，下面这个函数则不是纯函数，因为它更改了自己的入参：</li>
+</ul>
+
+
+<pre><code class="`">function withdraw(account, amount) {
+    account.total -= amount;
+ }
+</code></pre>
+
+<ul>
+<li>React 非常灵活，但它也有一个严格的规则：
+所有 React 组件都必须像纯函数一样保护它们的 props 不被更改。</li>
+</ul>
+
+
+<p> ### 正确地使用 State</p>
+
+<ul>
+<li>不要直接修改 State，要使用setState（）</li>
+<li>State 的更新可能是异步的</li>
+</ul>
+
+
+<p> 出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用。
+因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态。</p>
+
+<pre><code class="`"> // Wrong
+this.setState({
+    counter: this.state.counter + this.props.increment,
+});
+</code></pre>
+
+<p> 要解决这个问题，可以让 setState() 接收一个函数而不是一个对象。这个函数用上一个 state 作为第一个参数，将此次更新被应用时的 props 做为第二个参数：</p>
+
+<pre><code class="`"> // Correct
+this.setState((state, props) =&gt; ({
+    counter: state.counter + props.increment
+}));
+this.setState(state =&gt; ({
+    isToggleOn: !state.isToggleOn
+}));
+</code></pre>
+
+<ul>
+<li>State 的更新会被合并</li>
+</ul>
+
+
+<p> 当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state。</p>
+
+<ul>
+<li>这通常会被叫做“自上而下”或是“单向”的数据流。任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。</li>
+</ul>
+
+
+<p> ### 事件处理</p>
+
+<pre><code class="`"> class LoggingButton extends React.Component {
+  handleClick() {
+    console.log('this is:', this);
+  }
+
+  render() {
+    // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+    return (
+      &lt;button onClick={() =&gt; this.handleClick()}&gt;
+        Click me
+      &lt;/button&gt;
+    );
+  }
+}
+</code></pre>
+
+<ul>
+<li>此语法问题在于每次渲染 LoggingButton 时都会创建不同的回调函数。在大多数情况下，这没什么问题，但如果该回调函数作为 prop 传入子组件时，这些组件可能会进行额外的重新渲染。我们通常建议在构造器中绑定或使用 class fields 语法来避免这类性能问题。</li>
+</ul>
+
+
+<pre><code class="`"> class LoggingButton extends React.Component {
+  // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+  // 注意: 这是 *实验性* 语法。
+  handleClick = () =&gt; {
+  //  class fields 
+    console.log('this is:', this);
+  }
+
+  render() {
+    return (
+      &lt;button onClick={this.handleClick}&gt;
+        Click me
+      &lt;/button&gt;
+    );
+  }
+}
+</code></pre>
+
+<pre><code class="`"> &lt;button onClick={(e) =&gt; this.deleteRow(id, e)}&gt;Delete Row&lt;/button&gt;
+&lt;button onClick={this.deleteRow.bind(this, id)}&gt;Delete Row&lt;/button&gt;
+</code></pre>
+
+<ul>
+<li>在这两种情况下，React 的事件对象 e 会被作为第二个参数传递。如果通过箭头函数的方式，事件对象必须显式的进行传递，而通过 bind 的方式，事件对象以及更多的参数将会被隐式的进行传递。</li>
+</ul>
+
+
+<p> ### 列表 &amp; Key
+ - 一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串
+ - 一个好的经验法则是：在 map() 方法中的元素需要设置 key 属性。</p>
+
+<p> ### React.lazy
+ - React.lazy 函数能让你像渲染常规组件一样处理动态引入（的组件）。</p>
+
+<pre><code class="`"> 使用之前：
+import OtherComponent from './OtherComponent';
+使用之后：
+const OtherComponent = React.lazy(() =&gt; import('./OtherComponent'));
+</code></pre>
+
+<ul>
+<li>React.lazy 目前只支持默认导出（default exports）。如果你想被引入的模块使用命名导出（named exports），你可以创建一个中间模块，来重新导出为默认模块。这能保证 tree shaking 不会出错，并且不必引入不需要的组件。</li>
+</ul>
+
+
+<pre><code class="`"> // ManyComponents.js
+export const MyComponent = /* ... */;
+export const MyUnusedComponent = /* ... */;
+// MyComponent.js
+export { MyComponent as default } from "./ManyComponents.js";
+// MyApp.js
+import React, { lazy } from 'react';
+const MyComponent = lazy(() =&gt; import("./MyComponent.js"));
+</code></pre>
+
+<p> ### Context
+ - Context 主要应用场景在于很多不同层级的组件需要访问同样一些的数据。请谨慎使用，因为这会使得组件的复用性变差。
+ - Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据，例如当前认证的用户、主题或首选语言。</p>
+
+<pre><code class="`"> const MyContext = React.createContext(defaultValue);
+</code></pre>
+
+<ul>
+<li>创建一个 Context 对象。当 React 渲染一个订阅了这个 Context 对象的组件，这个组件会从组件树中离自身最近的那个匹配的 Provider 中读取到当前的 context 值。
+只有当组件所处的树中没有匹配到 Provider 时，其 defaultValue 参数才会生效。这有助于在不使用 Provider 包装组件的情况下对组件进行测试。注意：将 undefined 传递给 Provider 的 value 时，消费组件的 defaultValue 不会生效。</li>
+</ul>
+
+
+<pre><code class="`">&lt;MyContext.Provider value={/* 某个值 */}&gt;
+￼MyClass.contextType = MyContext;
+</code></pre>
+
+<ul>
+<li>挂载在 class 上的 contextType 属性会被重赋值为一个由 React.createContext() 创建的 Context 对象。这能让你使用 this.context 来消费最近 Context 上的那个值。你可以在任何生命周期中访问到它，包括 render 函数中。</li>
+</ul>
+
+
+<pre><code class="`"> class MyClass extends React.Component {
+static contextType = MyContext;
+render() {
+let value = this.context;
+/* 基于这个值进行渲染工作 */
+}
+}
+￼&lt;MyContext.Consumer&gt;
+￼{value =&gt; /* 基于 context 值进行渲染*/}
+￼&lt;/MyContext.Consumer&gt;
+</code></pre>
+
+<pre><code class="`"> const MyContext = React.createContext(/* some value */);
+MyContext.displayName = 'MyDisplayName';
+&lt;MyContext.Provider&gt; // "MyDisplayName.Provider" 在 DevTools 中
+&lt;MyContext.Consumer&gt; // "MyDisplayName.Consumer" 在 DevTools 中
+</code></pre>
+
+<p> ### 错误边界</p>
+
+<ul>
+<li>错误边界是一种 React 组件，这种组件可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI</li>
+<li>错误边界无法捕获以下场景中产生的错误：</li>
+<li>事件处理</li>
+<li>异步代码（例如 setTimeout 或 requestAnimationFrame 回调函数</li>
+<li>服务端渲染</li>
+<li>它自身抛出来的错误（并非它的子组件）</li>
+<li>如果一个 class 组件中定义了 static getDerivedStateFromError() 或 componentDidCatch() 这两个生命周期方法中的任意一个（或两个）时，那么它就变成一个错误边界。当抛出错误后，请使用 static getDerivedStateFromError() 渲染备用 UI ，使用 componentDidCatch() 打印错误信息。</li>
+</ul>
+
+
+<pre><code class="`">   static getDerivedStateFromError(error) {
+    // 更新 state 使下一次渲染能够显示降级后的 UI
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // 你同样可以将错误日志上报给服务器
+    logErrorToMyService(error, errorInfo);
+  }
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Weekend</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2021-05-15T20:16:06+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2021</span></span> <span class='time'>8:16 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://zhoumo199163.github.io/blog/2021/05/15/reactxue-xi-bi-ji/" data-via="" data-counturl="http://zhoumo199163.github.io/blog/2021/05/15/reactxue-xi-bi-ji/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2018/05/19/linkmap/" title="Previous Post: LinkMap">&laquo; LinkMap</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2021/05/15/reactxue-xi-bi-ji/">React学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/19/linkmap/">LinkMap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/24/ios-q-and-a/">iOS_Q&amp;A</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2021 - Weekend -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
