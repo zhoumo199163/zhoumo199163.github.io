@@ -1,0 +1,1746 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The Weekend Blog</title>
+  <meta name="author" content="Weekend">
+
+  
+  <meta name="description" content="入门教程 状态提升：当你遇到需要同时获取多个子组件数据，或者两个组件之间需要相互通讯的情况时，需要把子组件的 state 数据提升至其共同的父组件当中保存。之后父组件可以通过 props 将状态数据传递到子组件当中。这样应用当中所有组件的状态数据就能够更方便地同步共享了。
+为了提高可读性， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhoumo199163.github.io/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Weekend Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Weekend Blog</a></h1>
+  
+    <h2>I hope it will continue to be updated</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhoumo199163.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2021/05/15/reactxue-xi-bi-ji/">React学习笔记</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-05-15T20:16:06+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2021</span></span> <span class='time'>8:16 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>入门教程</h3>
+
+<ul>
+<li><p>状态提升：当你遇到需要同时获取多个子组件数据，或者两个组件之间需要相互通讯的情况时，需要把子组件的 state 数据提升至其共同的父组件当中保存。之后父组件可以通过 props 将状态数据传递到子组件当中。这样应用当中所有组件的状态数据就能够更方便地同步共享了。</p></li>
+<li><p>为了提高可读性，我们把返回的 React 元素拆分成了多行，同时在最外层加了小括号，这样 JavaScript 解析的时候就不会在 return 的后面自动插入一个分号从而破坏代码结构了。</p></li>
+<li><p>在 React 中，有一个命名规范，通常会将代表事件的监听 prop 命名为 on[Event]，将处理事件的监听方法命名为 handle[Event] 这样的格式。</p></li>
+<li><p>concat() 方法可能与你比较熟悉的 push() 方法不太一样，它并不会改变原数组，所以我们推荐使用 concat()</p></li>
+</ul>
+
+
+<h3>KEY</h3>
+
+<ul>
+<li><p>每当一个列表重新渲染时，React 会根据每一项列表元素的 key 来检索上一次渲染时与每个 key 所匹配的列表项。如果 React 发现当前的列表有一个之前不存在的 key，那么就会创建出一个新的组件。如果 React 发现和之前对比少了一个 key，那么就会销毁之前对应的组件。如果一个组件的 key 发生了变化，这个组件会被销毁，然后使用新的 state 重新创建一份。</p></li>
+<li><p>key 是 React 中一个特殊的保留属性（还有一个是 ref，拥有更高级的特性）。当 React 元素被创建出来的时候，React 会提取出 key 属性，然后把 key 直接存储在返回的元素上。虽然 key 看起来好像是 props 中的一个，但是你不能通过 this.props.key 来获取 key。React 会通过 key 来自动判断哪些组件需要更新。组件是不能访问到它的 key 的。</p></li>
+<li><p>我们强烈推荐，每次只要你构建动态列表的时候，都要指定一个合适的 key。如果你没有找到一个合适的 key，那么你就需要考虑重新整理你的数据结构了，这样才能有合适的 key。</p></li>
+</ul>
+
+
+<h3>函数组件</h3>
+
+<ul>
+<li>如果你想写的组件只包含一个 render 方法，并且不包含 state，那么使用函数组件就会更简单。我们不需要定义一个继承于 React.Component 的类，我们可以定义一个函数，这个函数接收 props 作为参数，然后返回需要渲染的元素。函数组件写起来并不像 class 组件那么繁琐，很多组件都可以使用函数组件来写。</li>
+</ul>
+
+
+<p>定义组件最简单的方式就是编写 JavaScript 函数：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> function Welcome(props) {
+</span><span class='line'>  return &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;;
+</span><span class='line'>}
+</span><span class='line'>￼ES6：
+</span><span class='line'>class Welcome extends React.Component {
+</span><span class='line'>  render() {
+</span><span class='line'>      return &lt;h1&gt;Hello, {this.props.name}&lt;/h1&gt;;
+</span><span class='line'>  }
+</span><span class='line'>}
+</span><span class='line'>注意： 组件名称必须以大写字母开头。</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Props的只读性</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> function sum(a, b) {
+</span><span class='line'>  return a + b;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>这样的函数被称为“纯函数”，因为该函数不会尝试更改入参，且多次调用下相同的入参始终返回相同的结果。
+相反，下面这个函数则不是纯函数，因为它更改了自己的入参：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function withdraw(account, amount) {
+</span><span class='line'>  account.total -= amount;
+</span><span class='line'> }</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>React 非常灵活，但它也有一个严格的规则：
+所有 React 组件都必须像纯函数一样保护它们的 props 不被更改。</li>
+</ul>
+
+
+<h3>正确地使用 State</h3>
+
+<ul>
+<li>不要直接修改 State，要使用setState（）</li>
+<li>State 的更新可能是异步的</li>
+</ul>
+
+
+<p>出于性能考虑，React 可能会把多个 setState() 调用合并成一个调用。
+因为 this.props 和 this.state 可能会异步更新，所以你不要依赖他们的值来更新下一个状态。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // Wrong
+</span><span class='line'>this.setState({
+</span><span class='line'>  counter: this.state.counter + this.props.increment,
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要解决这个问题，可以让 setState() 接收一个函数而不是一个对象。这个函数用上一个 state 作为第一个参数，将此次更新被应用时的 props 做为第二个参数：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // Correct
+</span><span class='line'>this.setState((state, props) =&gt; ({
+</span><span class='line'>  counter: state.counter + props.increment
+</span><span class='line'>}));
+</span><span class='line'>this.setState(state =&gt; ({
+</span><span class='line'>  isToggleOn: !state.isToggleOn
+</span><span class='line'>}));</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>State 的更新会被合并</li>
+</ul>
+
+
+<p> 当你调用 setState() 的时候，React 会把你提供的对象合并到当前的 state。</p>
+
+<ul>
+<li>这通常会被叫做“自上而下”或是“单向”的数据流。任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。</li>
+</ul>
+
+
+<h3>事件处理</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> class LoggingButton extends React.Component {
+</span><span class='line'>  handleClick() {
+</span><span class='line'>    console.log('this is:', this);
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  render() {
+</span><span class='line'>    // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+</span><span class='line'>    return (
+</span><span class='line'>      &lt;button onClick={() =&gt; this.handleClick()}&gt;
+</span><span class='line'>        Click me
+</span><span class='line'>      &lt;/button&gt;
+</span><span class='line'>    );
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>此语法问题在于每次渲染 LoggingButton 时都会创建不同的回调函数。在大多数情况下，这没什么问题，但如果该回调函数作为 prop 传入子组件时，这些组件可能会进行额外的重新渲染。我们通常建议在构造器中绑定或使用 class fields 语法来避免这类性能问题。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> class LoggingButton extends React.Component {
+</span><span class='line'>  // 此语法确保 `handleClick` 内的 `this` 已被绑定。
+</span><span class='line'>  // 注意: 这是 *实验性* 语法。
+</span><span class='line'>  handleClick = () =&gt; {
+</span><span class='line'>  //  class fields 
+</span><span class='line'>    console.log('this is:', this);
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  render() {
+</span><span class='line'>    return (
+</span><span class='line'>      &lt;button onClick={this.handleClick}&gt;
+</span><span class='line'>        Click me
+</span><span class='line'>      &lt;/button&gt;
+</span><span class='line'>    );
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> &lt;button onClick={(e) =&gt; this.deleteRow(id, e)}&gt;Delete Row&lt;/button&gt;
+</span><span class='line'>&lt;button onClick={this.deleteRow.bind(this, id)}&gt;Delete Row&lt;/button&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>在这两种情况下，React 的事件对象 e 会被作为第二个参数传递。如果通过箭头函数的方式，事件对象必须显式的进行传递，而通过 bind 的方式，事件对象以及更多的参数将会被隐式的进行传递。</li>
+</ul>
+
+
+<h3>列表 &amp; Key</h3>
+
+<ul>
+<li>一个元素的 key 最好是这个元素在列表中拥有的一个独一无二的字符串</li>
+<li>一个好的经验法则是：在 map() 方法中的元素需要设置 key 属性。</li>
+</ul>
+
+
+<h3>React.lazy</h3>
+
+<ul>
+<li>React.lazy 函数能让你像渲染常规组件一样处理动态引入（的组件）。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> 使用之前：
+</span><span class='line'>import OtherComponent from './OtherComponent';
+</span><span class='line'>使用之后：
+</span><span class='line'>const OtherComponent = React.lazy(() =&gt; import('./OtherComponent'));</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>React.lazy 目前只支持默认导出（default exports）。如果你想被引入的模块使用命名导出（named exports），你可以创建一个中间模块，来重新导出为默认模块。这能保证 tree shaking 不会出错，并且不必引入不需要的组件。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // ManyComponents.js
+</span><span class='line'>export const MyComponent = /* ... */;
+</span><span class='line'>export const MyUnusedComponent = /* ... */;
+</span><span class='line'>// MyComponent.js
+</span><span class='line'>export { MyComponent as default } from "./ManyComponents.js";
+</span><span class='line'>// MyApp.js
+</span><span class='line'>import React, { lazy } from 'react';
+</span><span class='line'>const MyComponent = lazy(() =&gt; import("./MyComponent.js"));</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Context</h3>
+
+<ul>
+<li>Context 主要应用场景在于很多不同层级的组件需要访问同样一些的数据。请谨慎使用，因为这会使得组件的复用性变差。</li>
+<li>Context 设计目的是为了共享那些对于一个组件树而言是“全局”的数据，例如当前认证的用户、主题或首选语言。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> const MyContext = React.createContext(defaultValue);</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>创建一个 Context 对象。当 React 渲染一个订阅了这个 Context 对象的组件，这个组件会从组件树中离自身最近的那个匹配的 Provider 中读取到当前的 context 值。
+只有当组件所处的树中没有匹配到 Provider 时，其 defaultValue 参数才会生效。这有助于在不使用 Provider 包装组件的情况下对组件进行测试。注意：将 undefined 传递给 Provider 的 value 时，消费组件的 defaultValue 不会生效。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;MyContext.Provider value={/* 某个值 */}&gt;
+</span><span class='line'>￼MyClass.contextType = MyContext;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>挂载在 class 上的 contextType 属性会被重赋值为一个由 React.createContext() 创建的 Context 对象。这能让你使用 this.context 来消费最近 Context 上的那个值。你可以在任何生命周期中访问到它，包括 render 函数中。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> class MyClass extends React.Component {
+</span><span class='line'>static contextType = MyContext;
+</span><span class='line'>render() {
+</span><span class='line'>let value = this.context;
+</span><span class='line'>/* 基于这个值进行渲染工作 */
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>￼&lt;MyContext.Consumer&gt;
+</span><span class='line'>￼{value =&gt; /* 基于 context 值进行渲染*/}
+</span><span class='line'>￼&lt;/MyContext.Consumer&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> const MyContext = React.createContext(/* some value */);
+</span><span class='line'>MyContext.displayName = 'MyDisplayName';
+</span><span class='line'>&lt;MyContext.Provider&gt; // "MyDisplayName.Provider" 在 DevTools 中
+</span><span class='line'>&lt;MyContext.Consumer&gt; // "MyDisplayName.Consumer" 在 DevTools 中</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>错误边界</h3>
+
+<ul>
+<li>错误边界是一种 React 组件，这种组件可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI</li>
+<li>错误边界无法捕获以下场景中产生的错误：</li>
+<li>事件处理</li>
+<li>异步代码（例如 setTimeout 或 requestAnimationFrame 回调函数</li>
+<li>服务端渲染</li>
+<li><p>它自身抛出来的错误（并非它的子组件）</p></li>
+<li><p>如果一个 class 组件中定义了 static getDerivedStateFromError() 或 componentDidCatch() 这两个生命周期方法中的任意一个（或两个）时，那么它就变成一个错误边界。当抛出错误后，请使用 static getDerivedStateFromError() 渲染备用 UI ，使用 componentDidCatch() 打印错误信息。</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>   static getDerivedStateFromError(error) {
+</span><span class='line'>    // 更新 state 使下一次渲染能够显示降级后的 UI
+</span><span class='line'>    return { hasError: true };
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  componentDidCatch(error, errorInfo) {
+</span><span class='line'>    // 你同样可以将错误日志上报给服务器
+</span><span class='line'>    logErrorToMyService(error, errorInfo);
+</span><span class='line'>  }</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Refs 转发</h3>
+
+<ul>
+<li>Ref 转发是一个可选特性，其允许某些组件接收 ref，并将其向下传递（换句话说，“转发”它）给子组件。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//3.React 传递 ref 给 forwardRef 内函数 (props, ref) =&gt; ...，作为其第二个参数。
+</span><span class='line'>const FancyButton = React.forwardRef((props, ref) =&gt; (
+</span><span class='line'>//4.我们向下转发该 ref 参数到 &lt;button ref={ref}&gt;，将其指定为 JSX 属性。
+</span><span class='line'>//5.当 ref 挂载完成，ref.current 将指向 &lt;button&gt; DOM 节点。
+</span><span class='line'>  &lt;button ref={ref} className="FancyButton"&gt;
+</span><span class='line'>    {props.children}
+</span><span class='line'>  &lt;/button&gt;
+</span><span class='line'>));
+</span><span class='line'>
+</span><span class='line'>// 1.我们通过调用 React.createRef 创建了一个 React ref 并将其赋值给 ref 变量。
+</span><span class='line'>const ref = React.createRef();
+</span><span class='line'>// 2.我们通过指定 ref 为 JSX 属性，将其向下传递给 &lt;FancyButton ref={ref}&gt;。
+</span><span class='line'>&lt;FancyButton ref={ref}&gt;Click me!&lt;/FancyButton&gt;;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>第二个参数 ref 只在使用 React.forwardRef 定义组件时存在。常规函数和 class 组件不接收 ref 参数，且 props 中也不存在 ref。</p></li>
+<li><p>一个输出组件 props 到控制台的 HOC (高阶组件)示例:</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function logProps(WrappedComponent) {
+</span><span class='line'>  class LogProps extends React.Component {
+</span><span class='line'>    componentDidUpdate(prevProps) {
+</span><span class='line'>      console.log('old props:', prevProps);
+</span><span class='line'>      console.log('new props:', this.props);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    render() {
+</span><span class='line'>      return &lt;WrappedComponent {...this.props} /&gt;;
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  return LogProps;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// 使用
+</span><span class='line'>class FancyButton extends React.Component {
+</span><span class='line'>  focus() {
+</span><span class='line'>    // ...
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  // ...
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// 我们导出 LogProps，而不是 FancyButton。
+</span><span class='line'>// 虽然它也会渲染一个 FancyButton。
+</span><span class='line'>export default logProps(FancyButton);</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>以上例子直接使用ref会挂载到logProps上，而不是FancyButton</p></li>
+<li><p>改进示例：</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function logProps(Component) {
+</span><span class='line'>  class LogProps extends React.Component {
+</span><span class='line'>    componentDidUpdate(prevProps) {
+</span><span class='line'>      console.log('old props:', prevProps);
+</span><span class='line'>      console.log('new props:', this.props);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    render() {
+</span><span class='line'>      const {forwardedRef, ...rest} = this.props;
+</span><span class='line'>
+</span><span class='line'>      // 将自定义的 prop 属性 “forwardedRef” 定义为 ref
+</span><span class='line'>      return &lt;Component ref={forwardedRef} {...rest} /&gt;;
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  // 注意 React.forwardRef 回调的第二个参数 “ref”。
+</span><span class='line'>  // 我们可以将其作为常规 prop 属性传递给 LogProps，例如 “forwardedRef”
+</span><span class='line'>  // 然后它就可以被挂载到被 LogProps 包裹的子组件上。
+</span><span class='line'>  return React.forwardRef((props, ref) =&gt; {
+</span><span class='line'>    return &lt;LogProps {...props} forwardedRef={ref} /&gt;;
+</span><span class='line'>  });
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Fragments</h3>
+
+<ul>
+<li>React 中的一个常见模式是一个组件返回多个元素。Fragments 允许你将子列表分组，而无需向 DOM 添加额外节点。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>render() {
+</span><span class='line'>  return (
+</span><span class='line'>    &lt;React.Fragment&gt;
+</span><span class='line'>      &lt;ChildA /&gt;
+</span><span class='line'>      &lt;ChildB /&gt;
+</span><span class='line'>      &lt;ChildC /&gt;
+</span><span class='line'>    &lt;/React.Fragment&gt;
+</span><span class='line'>  );
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>你可以使用一种新的，且更简短的语法来声明 Fragments。它看起来像空标签：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Columns extends React.Component {
+</span><span class='line'>  render() {
+</span><span class='line'>    return (
+</span><span class='line'>      &lt;&gt;
+</span><span class='line'>        &lt;td&gt;Hello&lt;/td&gt;
+</span><span class='line'>        &lt;td&gt;World&lt;/td&gt;
+</span><span class='line'>      &lt;/&gt;
+</span><span class='line'>    );
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>key 是唯一可以传递给 Fragment 的属性。</li>
+</ul>
+
+
+<h3>高阶组件HOC</h3>
+
+<ul>
+<li><p>高阶组件是参数为组件，返回值为新组件的函数</p></li>
+<li><p>组件是将 props 转换为 UI，而高阶组件是将组件转换为另一个组件。</p></li>
+<li><p>HOC 不会修改传入的组件，也不会使用继承来复制其行为。相反，HOC 通过将组件包装在容器组件中来组成新组件。HOC 是纯函数，没有副作用。</p></li>
+</ul>
+
+
+<h4>将不相关的 props 传递给被包裹的组件</h4>
+
+<ul>
+<li>HOC 为组件添加特性。自身不应该大幅改变约定。HOC 返回的组件与原组件应保持类似的接口。</li>
+</ul>
+
+
+<p>HOC 应该透传与自身无关的 props。大多数 HOC 都应该包含一个类似于下面的 render 方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>render() {
+</span><span class='line'>  // 过滤掉非此 HOC 额外的 props，且不要进行透传
+</span><span class='line'>  const { extraProp, ...passThroughProps } = this.props;
+</span><span class='line'>
+</span><span class='line'>  // 将 props 注入到被包装的组件中。
+</span><span class='line'>  // 通常为 state 的值或者实例方法。
+</span><span class='line'>  const injectedProp = someStateOrInstanceMethod;
+</span><span class='line'>
+</span><span class='line'>  // 将 props 传递给被包装组件
+</span><span class='line'>  return (
+</span><span class='line'>    &lt;WrappedComponent
+</span><span class='line'>      injectedProp={injectedProp}
+</span><span class='line'>      {...passThroughProps}
+</span><span class='line'>    /&gt;
+</span><span class='line'>  );
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>最大化可组合性</h4>
+
+<h4>包装显示名称以便轻松调试</h4>
+
+<ul>
+<li>请选择一个显示名称，以表明它是 HOC 的产物。</li>
+<li>最常见的方式是用 HOC 包住被包装组件的显示名称。比如高阶组件名为 withSubscription，并且被包装组件的显示名称为 CommentList，显示名称应该为 WithSubscription(CommentList)：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function withSubscription(WrappedComponent) {
+</span><span class='line'>  class WithSubscription extends React.Component {/* ... */}
+</span><span class='line'>  WithSubscription.displayName = `WithSubscription(${getDisplayName(WrappedComponent)})`;
+</span><span class='line'>  return WithSubscription;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>function getDisplayName(WrappedComponent) {
+</span><span class='line'>  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>HOC注意事项</h4>
+
+<ul>
+<li>不要在 render 方法中使用 HOC</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>render() {
+</span><span class='line'>  // 每次调用 render 函数都会创建一个新的 EnhancedComponent
+</span><span class='line'>  // EnhancedComponent1 !== EnhancedComponent2
+</span><span class='line'>  const EnhancedComponent = enhance(MyComponent);
+</span><span class='line'>  // 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！
+</span><span class='line'>  return &lt;EnhancedComponent /&gt;;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这不仅仅是性能问题 - 重新挂载组件会导致该组件及其所有子组件的状态丢失。
+你可以在组件的生命周期方法或其构造函数中进行调用。</p>
+
+<ul>
+<li>务必复制静态方法
+当你将 HOC 应用于组件时，原始组件将使用容器组件进行包装。这意味着新组件没有原始组件的任何静态方法。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 定义静态函数
+</span><span class='line'>WrappedComponent.staticMethod = function() {/*...*/}
+</span><span class='line'>// 现在使用 HOC
+</span><span class='line'>const EnhancedComponent = enhance(WrappedComponent);
+</span><span class='line'>
+</span><span class='line'>// 增强组件没有 staticMethod
+</span><span class='line'>typeof EnhancedComponent.staticMethod === 'undefined' // true</span></code></pre></td></tr></table></div></figure>
+
+
+<p>为了解决这个问题，你可以在返回之前把这些方法拷贝到容器组件上：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function enhance(WrappedComponent) {
+</span><span class='line'>  class Enhance extends React.Component {/*...*/}
+</span><span class='line'>  // 必须准确知道应该拷贝哪些方法 :(
+</span><span class='line'>  Enhance.staticMethod = WrappedComponent.staticMethod;
+</span><span class='line'>  return Enhance;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另一个可行的方案是再额外导出这个静态方法。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 使用这种方式代替...
+</span><span class='line'>MyComponent.someFunction = someFunction;
+</span><span class='line'>export default MyComponent;
+</span><span class='line'>
+</span><span class='line'>// ...单独导出该方法...
+</span><span class='line'>export { someFunction };
+</span><span class='line'>
+</span><span class='line'>// ...并在要使用的组件中，import 它们
+</span><span class='line'>import MyComponent, { someFunction } from './MyComponent.js';
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Refs 不会被传递</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2018/05/19/linkmap/">LinkMap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-05-19T23:13:19+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>19</span><span class='date-suffix'>th</span>, <span class='date-year'>2018</span></span> <span class='time'>11:13 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>前言</h3>
+
+<p>  苹果对于提交审核的App中可执行文件有明确的大小限制，查看应用的可执行文件大小就需要利用LinkMap文件。
+   <img src="/images/limitSize.jpg"></p>
+
+<h3>1.如何生成LinkMap文件</h3>
+
+<h4>1).在工程的Build Setting中找到Write Link Map File并打开开关</h4>
+
+<p><img src="/images/openLinkMap.jpg"></p>
+
+<h4>2).在debug或者release下编译工程</h4>
+
+<h4>3).先找到编译后的app文件，向上两级的Products同目录下有Intermediates.noindex文件夹，在该文件夹下能够找到名称为项目名-LinkMap-normal-x86_64.txt的文件(x86_64是架构，如果是真机，可能为arm64或者其他)</h4>
+
+<p><img src="/images/linkMapPath.jpg"></p>
+
+<h3>2.LinkMap有什么作用</h3>
+
+<p>LinKMap文件分为四个部分：</p>
+
+<h4>1：# Path:当前LinkMap编译的路径</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Path: /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Products/Debug-iphonesimulator/LinkMapTest.app/LinkMapTest</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2：# Arch:当前编译的系统架构</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Arch: x86_64</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3：# Object files:编译的所有文件</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Object files:
+</span><span class='line'>[  0] linker synthesized
+</span><span class='line'>[  1] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/LinkMapTest.app.xcent
+</span><span class='line'>[  2] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/ViewController.o
+</span><span class='line'>[  3] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/main.o
+</span><span class='line'>[  4] /Users/zhoumo1/Library/Developer/Xcode/DerivedData/LinkMapTest-brvtnqhfmtphzohebrymhqgdzhwp/Build/Intermediates.noindex/LinkMapTest.build/Debug-iphonesimulator/LinkMapTest.build/Objects-normal/x86_64/AppDelegate.o
+</span><span class='line'>[  5] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks//Foundation.framework/Foundation.tbd
+</span><span class='line'>[  6] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/usr/lib/libobjc.tbd
+</span><span class='line'>[  7] /Users/zhoumo1/Downloads/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks//UIKit.framework/UIKit.tbd</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>4：# Sections:</h4>
+
+<p>段表标题中列举出了地址，大小，段类型以及段名称。<br/>
+数据类型分为两种不同类型，一种是<strong>TEXT，用于保存程序代码段经过编译后的机器码，另外一种是</strong>DATA用于保存诸如全局变量或者局部变量。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Sections:
+</span><span class='line'># Address Size        Segment Section
+</span><span class='line'>0x100001590   0x00000453  __TEXT  __text
+</span><span class='line'>0x1000019E4   0x00000036  __TEXT  __stubs
+</span><span class='line'>0x100001A1C   0x0000006A  __TEXT  __stub_helper
+</span><span class='line'>0x100001A86   0x00000A70  __TEXT  __objc_methname
+</span><span class='line'>0x1000024F6   0x0000003C  __TEXT  __objc_classname
+</span><span class='line'>0x100002532   0x00000878  __TEXT  __objc_methtype
+</span><span class='line'>0x100002DAA   0x0000007A  __TEXT  __cstring
+</span><span class='line'>0x100002E24   0x00000186  __TEXT  __entitlements
+</span><span class='line'>0x100002FAC   0x00000048  __TEXT  __unwind_info
+</span><span class='line'>0x100003000   0x00000010  __DATA  __nl_symbol_ptr
+</span><span class='line'>0x100003010   0x00000048  __DATA  __la_symbol_ptr
+</span><span class='line'>0x100003058   0x00000010  __DATA  __objc_classlist
+</span><span class='line'>0x100003068   0x00000010  __DATA  __objc_protolist
+</span><span class='line'>0x100003078   0x00000008  __DATA  __objc_imageinfo
+</span><span class='line'>0x100003080   0x00000C48  __DATA  __objc_const
+</span><span class='line'>0x100003CC8   0x00000030  __DATA  __objc_selrefs
+</span><span class='line'>0x100003CF8   0x00000008  __DATA  __objc_classrefs
+</span><span class='line'>0x100003D00   0x00000008  __DATA  __objc_superrefs
+</span><span class='line'>0x100003D08   0x00000008  __DATA  __objc_ivar
+</span><span class='line'>0x100003D10   0x000000A0  __DATA  __objc_data
+</span><span class='line'>0x100003DB0   0x000000C0  __DATA  __data</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>5：# Symbols:文件中每一个方法的大小</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Symbols:
+</span><span class='line'># Address Size        File  Name
+</span><span class='line'>0x100001590   0x00000040  [  2] -[ViewController viewDidLoad]
+</span><span class='line'>0x1000015D0   0x00000050  [  2] -[ViewController viewDidAppear:]
+</span><span class='line'>0x100001620   0x00000050  [  2] -[ViewController viewWillAppear:]
+</span><span class='line'>0x100001670   0x00000050  [  2] -[ViewController viewDidDisappear:]
+</span><span class='line'>0x1000016C0   0x0000003C  [  2] -[ViewController didReceiveMemoryWarning]
+</span><span class='line'>0x100001700   0x00000090  [  3] _main
+</span><span class='line'>0x100001790   0x00000080  [  4] -[AppDelegate application:didFinishLaunchingWithOptions:]
+</span><span class='line'>0x100001810   0x00000040  [  4] -[AppDelegate applicationWillResignActive:]
+</span><span class='line'>0x100001850   0x00000040  [  4] -[AppDelegate applicationDidEnterBackground:]
+</span><span class='line'>0x100001890   0x00000040  [  4] -[AppDelegate applicationWillEnterForeground:]
+</span><span class='line'>0x1000018D0   0x00000040  [  4] -[AppDelegate applicationDidBecomeActive:]
+</span><span class='line'>0x100001910   0x00000040  [  4] -[AppDelegate applicationWillTerminate:]
+</span><span class='line'>0x100001950   0x00000020  [  4] -[AppDelegate window]
+</span><span class='line'>0x100001970   0x00000040  [  4] -[AppDelegate setWindow:]
+</span><span class='line'>0x1000019B0   0x00000033  [  4] -[AppDelegate .cxx_destruct]
+</span><span class='line'>···</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3.如何减少库大小</h3>
+
+<p>除了第三方的库以外，我们还能对自己的代码做些什么？</p>
+
+<h4>1）注释或删除空方法和没有调用的方法</h4>
+
+<p>如上文分析，类中存在的方法就会被计算大小，无论是否调用。所以可以删除类中 如:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewWillAppear:(BOOL)animated{
+</span><span class='line'>    [super viewWillAppear:animated];
+</span><span class='line'>}
+</span><span class='line'>- (void)viewDidDisappear:(BOOL)animated{
+</span><span class='line'>    [super viewDidDisappear:animated];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>多加了两个空方法的大小对比如下,虽然空方法占用的很少，但是如果数量比较多还是很可观。
+<img src="/images/compare1.jpg"></p>
+
+<h4>2）比较去重</h4>
+
+<p>分析过滤项目中的重复代码。通过整合减少代码量。</p>
+
+<p>介绍一种去重的方法，使用PMD去重：<br/>
+1.下载：<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a><br/>
+2.cd 到bin目录中<br/>
+3.在终端输入</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>./run.sh cpd --language ObjectiveC --minimum-tokens 100 --files /Users/zhoumo1/Desktop/LinkMap/LinkMapTest/LinkMapTest &gt; /Users/zhoumo1/Desktop/check.txt </span></code></pre></td></tr></table></div></figure>
+
+
+<p>4.查看结果~完美</p>
+
+<h4>3）升级最低版本||重构</h4>
+
+<p>这没什么好说的，iOS9已经支持到500M，如果实在不能删减，升级最低支持版本是最有效的。</p>
+
+<p>重构风险较大，并且重构后也不一定会小很多，不支持。</p>
+
+<h3>4.LinkMap比对</h3>
+
+<p>为了方便查看做了以上减少工作后的结果如何，于是写了一个简单的Mac应用，主要功能是对比两份LinkMap文件。</p>
+
+<p>git地址：<a href="https://github.com/zhoumo199163/compareLinkMap">https://github.com/zhoumo199163/compareLinkMap</a></p>
+
+<p>如果觉得对你有用，欢迎star~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-12-31T21:59:25+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2017</span></span> <span class='time'>9:59 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>1.找到字符串中最长无重复子串</h3>
+
+<ul>
+<li>例如aabbc，最长无重复子串abc，长度3；abcd，长度4；</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 思路：
+</span><span class='line'>// 1.先申请一个字典，key是每一个字符，value是字符上一次出现的位置
+</span><span class='line'>// 2.pre：该字符上次出现的位置
+</span><span class='line'>// 3.cur:当前位置和上次出现位置的距离
+</span><span class='line'>// 4.len:最长距离
+</span><span class='line'>- (void)maxUniqu:(NSString *)string{
+</span><span class='line'>    NSMutableDictionary *nums = [NSMutableDictionary new];
+</span><span class='line'>    NSArray  *array = [string componentsSeparatedByString:@","];
+</span><span class='line'>    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+</span><span class='line'>        nums[obj] = @(-1);
+</span><span class='line'>    }];
+</span><span class='line'>    
+</span><span class='line'>   __block int pre = -1;
+</span><span class='line'>   __block int len = 0;
+</span><span class='line'>   __block int cur = 0;
+</span><span class='line'>    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+</span><span class='line'>        pre = MAX(pre, [nums[obj] intValue]);
+</span><span class='line'>        cur = idx - pre;
+</span><span class='line'>        len = MAX(len, cur);
+</span><span class='line'>        nums[obj] = @(idx);
+</span><span class='line'>        NSLog(@"\nobj:%@\npre:%d\ncur:%d\nlen:%d\nnums:%@",obj,pre,cur,len,nums);
+</span><span class='line'>    }];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/12/24/ios-q-and-a/">iOS_Q&amp;A</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-12-24T14:46:28+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>2:46 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Q1.通知是同步还是异步？</h3>
+
+<ul>
+<li>A1:通知是同步的。测试如下：</li>
+</ul>
+
+
+<pre><code class="`"> [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print1:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print2:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print3:) name:@"GCDNotification" object:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GCDNotification" object:nil];
+        NSLog(@"发出通知----%@",[NSThread currentThread]);
+
+    - (void)print:(NSNotification *)notif{
+        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+
+        sleep(10);
+}
+// log 
+2017-12-24 15:07:58.552422+0800 KVOTest[7306:368524] 0收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:08.553940+0800 KVOTest[7306:368524] 1收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:18.555010+0800 KVOTest[7306:368524] 2收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:28.557206+0800 KVOTest[7306:368524] 3收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:38.559301+0800 KVOTest[7306:368524] 发出通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+</code></pre>
+
+<ul>
+<li>模拟实现异步接收的效果如下：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> -(void)print:(NSNotification *)notif{
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+</span><span class='line'>        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+</span><span class='line'>        sleep(10);
+</span><span class='line'>    });
+</span><span class='line'>}
+</span><span class='line'>// log
+</span><span class='line'>2017-12-24 15:11:09.680454+0800 KVOTest[7325:373178] 2收到通知----&lt;NSThread: 0x60000026c880&gt;{number = 5, name = (null)}
+</span><span class='line'>2017-12-24 15:11:09.680454+0800 KVOTest[7325:373056] 3收到通知----&lt;NSThread: 0x60400006e800&gt;{number = 1, name = main}
+</span><span class='line'>2017-12-24 15:11:09.680488+0800 KVOTest[7325:373176] 0收到通知----&lt;NSThread: 0x60000026c040&gt;{number = 3, name = (null)}
+</span><span class='line'>2017-12-24 15:11:09.680491+0800 KVOTest[7325:373175] 1收到通知----&lt;NSThread: 0x60400027d440&gt;{number = 4, name = (null)}
+</span><span class='line'>2017-12-24 15:11:19.682627+0800 KVOTest[7325:373056] 发出通知----&lt;NSThread: 0x60400006e800&gt;{number = 1, name = main}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q2.UIView和CALayer的父类及关系？</h3>
+
+<ul>
+<li>UIView的父类是UIResponse，可以响应事件和手势</li>
+<li>CALyer的父类是NSObject，不可以响应事件和手势，更偏重内容绘制</li>
+<li>每个UIView都有自己的CALayer，UIView的frame只是返回CALayer的frame</li>
+<li>在 View显示的时候，UIView 做为 Layer 的 CALayerDelegate</li>
+</ul>
+
+
+<h3>Q3.手动设置UIView的bounds会怎样？</h3>
+
+<ul>
+<li>[UIview setBounds:]改变当前view相对于子view的坐标原点。</li>
+</ul>
+
+
+<pre><code class="`"> UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0,0, 375, 100)];
+    [view1 setBackgroundColor:[UIColor grayColor]];
+    [self.view addSubview:view1];
+
+    // 改变后，view1的原点在（0，-100）位置
+    self.view.bounds = CGRectMake(0, -100, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
+</code></pre>
+
+<p> <img src="/images/noSetBounds.png">
+ <img src="/images/setBounds.png"></p>
+
+<h3>Q4.在xib中创建一个全view大小的tableview，会不会被导航栏遮挡？为什么？</h3>
+
+<ul>
+<li>正常情况下，导航栏的透明度可影响视图是否被遮挡</li>
+</ul>
+
+
+<pre><code class="`"> // 设置不透明，self.view在导航栏下面展示，不遮挡
+ // 否则，self.view为全屏展示，会被导航栏遮挡
+ self.navigationController.navigationBar.translucent = NO;
+</code></pre>
+
+<ul>
+<li>在不考虑以上透明度的影响，tableview不被遮挡的同时还需要滑动时在不透明的导航栏中透出</li>
+</ul>
+
+
+<pre><code class="`">  // iOS10 以上系统自动设置，以下需要手动设置
+  [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+</code></pre>
+
+<h3>Q5.动态库和静态库的区别？系统库属于哪种？</h3>
+
+<ul>
+<li>静态库以.a和.framework作为文件后缀名，在使用时会被完全的copy一份到文件中，多次使用就包含多次拷贝文件，平时使用的第三方库大部分都是静态库，会使app的体积变大。</li>
+<li>动态库以.framework和.tbd(之前叫.dylib)作为文件后缀名，在使用时不会拷贝，由系统动态加载到内存中，只加载一次，多次使用可节省空间。如系统库UIKit等都是动态库。</li>
+<li>动态库制作可以包含其他静态库(.a/.framework)</li>
+<li>静态库制作可以包含其他静态库(.a/.framework）</li>
+</ul>
+
+
+<h3>Q6.为什么加载xib文件比纯代码耗时？</h3>
+
+<ul>
+<li>xib实质是xml文件，系统先要解析xml文件中的view及参数属性。</li>
+</ul>
+
+
+<h3>Q7.podfile.lock的作用？</h3>
+
+<ul>
+<li>在使用命令【pod install】以后会生成podfile.lock文件，这个文件中保存已经安装的Pods依赖库的版本。</li>
+<li>在多人协作时，特别是在podfile文件中没有指定依赖版本号时，如果有podfile.lock文件，其他人在执行【pod install】时就会和最开始的用户保持版本一致。如果没有podfile.lock文件，可能更新出不同的版本。所以podfile.lock需要加入版本管理。</li>
+</ul>
+
+
+<pre><code class="`"> // podfile 
+ platform :ios, '9.0'
+def shared_pods
+    pod 'FMDB' // 不指定版本，获取最新版本
+end
+target 'LittleNotes' do 
+    shared_pods
+end
+target 'LittleNotesWidget' do
+    shared_pods
+end
+</code></pre>
+
+<pre><code class="`"> //podfile.lock
+ PODS:
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
+DEPENDENCIES:
+  - FMDB
+SPEC CHECKSUMS:
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+PODFILE CHECKSUM: f5e7b7c51ca371b02aa28c158108e5f9ccdf3033
+COCOAPODS: 1.3.1
+</code></pre>
+
+<h3>Q8.如何优化应用启动时间？</h3>
+
+<ul>
+<li>冷启动：启动的应用不在后台运行，系统需要重新创建一个新进程分配给应用。App启动时间是从手指点击到调用applicationWillFinishLaunching结束</li>
+<li>热启动：应用已经运行，但是被后台挂起，比如按了home键。App的启动时间是从手指点击到调用applicationWillEnterForeground。</li>
+<li>测量应用启动时间：Xcode - Edit scheme - Auguments 配置环境变量DYLD_PRINT_STATISTICS为1.</li>
+</ul>
+
+
+<pre><code class="`"> Total pre-main time:  99.69 milliseconds (100.0%)
+         dylib loading time:  39.31 milliseconds (39.4%)
+        rebase/binding time:   7.57 milliseconds (7.5%)
+            ObjC setup time:  10.25 milliseconds (10.2%)
+           initializer time:  42.39 milliseconds (42.5%)
+           slowest intializers :
+             libSystem.B.dylib :  11.93 milliseconds (11.9%)
+   libBacktraceRecording.dylib :   7.14 milliseconds (7.1%)
+    libMainThreadChecker.dylib :  17.24 milliseconds (17.2%)
+</code></pre>
+
+<p> 影响启动时间因素：
+ - 动态库加载时间。一般应用会加载 100 到 400 个 dylib 文件，但大部分都是系统 dylib，它们会被预先计算和缓存起来，加载速度很快。但是另外集成的动态库应该尽量减少动态库的数量，或者将多个动态库合成一个。尽量保证将App现有的非系统级的动态库个数保证在6个以内。
+ - 指针修正时间。减少指针数量。就是减少App中的类、category、selector的数量。
+ - 初始化时间：使用+initialize代替+load方法，不要使用<strong>attribute</strong>((constructor)) 将方法显式标记为初始化器</p>
+
+<pre><code class="``">  load -&gt; attribute((constructor)) -&gt; main -&gt; initialize
+  + (void)initialize{
+    // 在类被第一次使用的时候调用
+  }
+  + (void)load{
+    // 在类被运行时加载时调用
+  }
+  __attribute((constructor)) void beforeMain(){
+  //是GCC的扩展语法（黑魔法），由它修饰过的函数，会在main函数之前调用
+  }
+</code></pre>
+
+<h3>Q9.dSYM是什么文件，有什么作用？</h3>
+
+<ul>
+<li>每次编译build/Archive App时，会生成一个同名的dSYM文件，dSYM 是保存 16 进制函数地址映射信息的中转文件.</li>
+<li>.dSYM中真正保存符号表数据的是DWARF文件。DWARF（DebuggingWith Arbitrary Record Formats），是ELF和Mach-O等文件格式中用来存储和处理调试信息的标准格式。</li>
+<li><p>.dSYM文件主要用于在发生崩溃时，根据崩溃内存地址查找到具体的崩溃位置。</p></li>
+<li><p>1.首先必须保.dSYM和.app文件是对应的</p></li>
+</ul>
+
+
+<pre><code class="`"> // 通过读取文件中的UUID
+ dwarfdump --uuid xx.app/xx (xx代表你的项目名)
+ dwarfdump --uuid xx.app.dSYM;
+</code></pre>
+
+<ul>
+<li>2.崩溃错误信息</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // 一般崩溃信息格式
+</span><span class='line'>appName 0x000000010011496c appName + 379244
+</span><span class='line'>
+</span><span class='line'> // 0x000000010011496c:崩溃内存地址，十六进制
+</span><span class='line'> 379244：地址偏移量，十进制</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>3.定位</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // 终端运行
+</span><span class='line'> atos -arch arm64（1） -o "dSYM文件路径（2）" -l 0x00000001000B8000（3） 0x000000010011496c
+</span><span class='line'> 
+</span><span class='line'> // 1.处理器指令集，真机64位处理器为arm64，32位处理器为armv7或armv7s
+</span><span class='line'> // 2.将dSYM文件-右键-显示包内容，定位到DWARF目录下的app同名文件，如：/Users/zm/Desktop/ywh_dSYM/2.1.1/uclture.app.dSYM/Contents/Resources/DWARF/玩事
+</span><span class='line'> // 3.初始内存地址：将十六进制崩溃内存地址转化为十进制后，减去地址偏移量，获得十进制内存初始地址，再转化成十六进制
+</span><span class='line'> 如：0x000000010011496c（16）= 4296100204（10）
+</span><span class='line'> 初始地址（10） = 4296100204 - 379244 = 4295720960
+</span><span class='line'> 4295720960（10） = 1000B8000（16）
+</span><span class='line'> 
+</span><span class='line'> // 运行结果
+</span><span class='line'> -[HonorChatViewController tableView:heightForRowAtIndexPath:] (in ) (HonorChatViewController.m:193)</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q9.关于设置frame和autolayout布局的区别</h3>
+
+<ul>
+<li>手动设置frame，虽然也可以设置相对位置，不过需要大量的计算。</li>
+<li>设置autolayout不需要自己去计算</li>
+<li>直接设置frame在屏幕旋转等事件发生时需要重新适配计算位置，autolayout不需要</li>
+</ul>
+
+
+<h3>Q10.怎么避免NSTimer的循环引用？</h3>
+
+<ul>
+<li>1.不重复timer</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:NO];
+</span><span class='line'>  // timer在执行一次selector后自动调用invalidate方法，不会造成循环应用</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2.重复执行的timer</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:YES];
+</span><span class='line'> // 重复的timer必须手动执行invalidate方法，且不能再dealloc中执行，因为timer强引用self，导致self不能释放，不会触发dealloc</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><ol>
+<li>invalidate方法的作用</li>
+</ol>
+</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  Stops the timer from ever firing again and requests its removal from its run loop.
+</span><span class='line'>This method is the only way to remove a timer from an NSRunLoop object. The NSRunLoop object removes its strong reference to the timer, either just before the invalidate method returns or at some later point.
+</span><span class='line'>If it was configured with target and user info objects, the receiver removes its strong references to those objects as well.
+</span><span class='line'>停止计时器再次触发，并请求将其从运行循环中删除。
+</span><span class='line'>该方法是从NSRunLoop对象中删除计时器的惟一方法。NSRunLoop对象删除了它对计时器的强引用，或者是在无效的方法返回之前，或者在稍后的某个时间点。
+</span><span class='line'>如果它配置了目标和用户信息对象，接收者也会删除对这些对象的强引用。</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q11.在block中使用_xxx的方式使用属性会不会循环引用？</h3>
+
+<ul>
+<li>会产生循环引用</li>
+<li>_name和self.name的区别是self.name直接调用属性的get方法，</li>
+<li>_name是调用类的实例变量。都会传入self被block强引用。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>self.block = ^(id target) {
+</span><span class='line'>        _name = @"weekend";
+</span><span class='line'>    };
+</span><span class='line'>    self.block(self);</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q12.设计一个方法查询指定view上所有相同类型的子控件</h3>
+
+<ul>
+<li>1.需要想到view的子view的子view&hellip;中也要查找</li>
+<li>2.自定义继承的控件也需要查找</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 1.使用递归查找子view
+</span><span class='line'>// 2.自定义控件使用isKindOfClass
+</span><span class='line'>- (NSInteger)searchSubviewsCountByType:(NSString *)type atView:(UIView *)view{
+</span><span class='line'>   __block NSInteger count = 0;
+</span><span class='line'>    NSArray &lt;UIView*&gt; *subviews = view.subviews;
+</span><span class='line'>    [subviews enumerateObjectsUsingBlock:^(UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+</span><span class='line'>        NSInteger subCount = 0;
+</span><span class='line'>        if(obj.subviews.count != 0){
+</span><span class='line'>            subCount = subCount + [self searchSubviewsCountByType:type atView:obj];
+</span><span class='line'>        }else{
+</span><span class='line'>            Class targetClass = NSClassFromString(type);
+</span><span class='line'>            if([obj isKindOfClass:targetClass]){
+</span><span class='line'>                subCount++;
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        count = count + subCount;
+</span><span class='line'>    }];
+</span><span class='line'>    return count;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// isKindOfClass:返回一个布尔值，该值表示接收者是给定类的实例还是继承该类的任何类的实例。
+</span><span class='line'>Returns a Boolean value that indicates whether the receiver is an instance of given class or an instance of any class that inherits from that class.
+</span><span class='line'>// isMemberOfClass:返回一个布尔值，该值表示接收者是否为给定类的实例。
+</span><span class='line'>Returns a Boolean value that indicates whether the receiver is an instance of a given class.</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q13.在主线程中新建一个串行队列，同步执行任务，任务在哪个线程中执行？为什么？</h3>
+
+<ul>
+<li>任务执行在主线程</li>
+<li>串行队列：队列中的任务按照顺序执行</li>
+<li>并行队列：队列中的任务同时执行</li>
+<li>同步：阻塞当前线程，直到任务执行完毕</li>
+<li>异步：不阻塞当前线程</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 同步串行：阻塞当前主线程，并顺序执行。不同的任务队列不会发生死锁。
+</span><span class='line'> dispatch_sync(dispatch_queue_create("serial", DISPATCH_QUEUE_SERIAL), ^{
+</span><span class='line'>        NSLog(@"currentThread:%@",[NSThread currentThread]);
+</span><span class='line'>    });
+</span><span class='line'>//log:
+</span><span class='line'>currentThread:&lt;NSThread: 0x604000076c40&gt;{number = 1, name = main}
+</span><span class='line'>
+</span><span class='line'>// 死锁：当前队列等待block中的任务执行完毕，block中任务阻塞主线程等待主线程队列中的任务执行完毕。
+</span><span class='line'>dispatch_sync(dispatch_get_main_queue(), ^{
+</span><span class='line'>        NSLog(@"currentThread:%@",[NSThread currentThread]);
+</span><span class='line'>    });</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q14.在dealloc中写以下方法会输出什么？</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)dealloc{
+</span><span class='line'>    __weak typeof(self) weakSelf = self;
+</span><span class='line'>    NSLog(@"weakSelf:%@",weakSelf);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>运行崩溃：objc[1653]: Cannot form weak reference to instance (0x7fc3a8c0c920) of class TestViewController. It is possible that this object was over-released, or is in the process of deallocation.</li>
+<li>dealloc:释放被接收方占用的内存。
+接收到接收方的后续消息可能会产生一个错误，指示消息被发送到一个回收对象(前提是该回收的内存还没有被重用)。</li>
+<li>当前self在回收过程中，不允许弱引用</li>
+</ul>
+
+
+<h3>Q15.怎么在当前页面关闭的时候取消还没有下载完成的任务？</h3>
+
+<ul>
+<li>1.NSOperation</li>
+</ul>
+
+
+<pre><code class="`"> // 1.添加任务到队列
+  self.operationQueue = [NSOperationQueue new];
+    self.operationQueue.maxConcurrentOperationCount = 1;
+    for(int i = 0;i&lt;10;i++){
+        [self.operationQueue addOperationWithBlock:^{
+            sleep(1);
+            NSLog(@"i == %d",i);
+        }];
+    }
+  // 2. 挂起队列，不能暂停正在执行的任务
+   [self.operationQueue setSuspended:YES];
+  // 3. 取消挂起
+  [self.operationQueue setSuspended:No];
+  // 4.取消全部任务
+    [self.operationQueue cancelAllOperations];
+   // 5.取消单个任务
+    NSBlockOperation *blockOp = [NSBlockOperation blockOperationWithBlock:^{
+        // do something
+    }];
+    [self.operationQueue addOperation:blockOp];
+    [blockOp cancel];
+</code></pre>
+
+<ul>
+<li>2.GCD</li>
+</ul>
+
+
+<pre><code class="`"> // 1.添加任务到队列
+  dispatch_block_t gcdBlcok = dispatch_block_create(0, ^{
+        NSLog(@"to do something");
+    });
+    dispatch_async(self.queue, gcdBlcok);
+  // 2.取消任务
+  dispatch_block_cancel(gcdBlcok);
+  OR dispatch_cancel(gcdBlcok);
+  // 3.挂起队列
+  dispatch_suspend(self.queue);
+  // 4.取消挂起
+  dispatch_resume(self.queue);
+</code></pre>
+
+<ul>
+<li>3.页面关闭时，取消队列中还没有开始的任务。如果使用GCD需要将任务单独生成一个dispatch_block_t对象，如果是NSOperation，直接调用
+cancelAllOperations。</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2021/05/15/reactxue-xi-bi-ji/">React学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/19/linkmap/">LinkMap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/24/ios-q-and-a/">iOS_Q&amp;A</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2021 - Weekend -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

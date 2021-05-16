@@ -1,0 +1,692 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS_Q&amp;A - The Weekend Blog</title>
+  <meta name="author" content="Weekend">
+
+  
+  <meta name="description" content="Q1.通知是同步还是异步？ A1:通知是同步的。测试如下： [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print:) name:@"GCDNotification" object:nil &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="The Weekend Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">The Weekend Blog</a></h1>
+  
+    <h2>I hope it will continue to be updated</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="zhoumo199163.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS_Q&amp;A</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-12-24T14:46:28+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>2:46 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>Q1.通知是同步还是异步？</h3>
+
+<ul>
+<li>A1:通知是同步的。测试如下：</li>
+</ul>
+
+
+<pre><code class="`"> [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print1:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print2:) name:@"GCDNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(print3:) name:@"GCDNotification" object:nil];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"GCDNotification" object:nil];
+        NSLog(@"发出通知----%@",[NSThread currentThread]);
+
+    - (void)print:(NSNotification *)notif{
+        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+
+        sleep(10);
+}
+// log 
+2017-12-24 15:07:58.552422+0800 KVOTest[7306:368524] 0收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:08.553940+0800 KVOTest[7306:368524] 1收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:18.555010+0800 KVOTest[7306:368524] 2收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:28.557206+0800 KVOTest[7306:368524] 3收到通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+2017-12-24 15:08:38.559301+0800 KVOTest[7306:368524] 发出通知----&lt;NSThread: 0x604000066840&gt;{number = 1, name = main}
+</code></pre>
+
+<ul>
+<li>模拟实现异步接收的效果如下：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> -(void)print:(NSNotification *)notif{
+</span><span class='line'>    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+</span><span class='line'>        NSLog(@"0收到通知----%@",[NSThread currentThread]);
+</span><span class='line'>        sleep(10);
+</span><span class='line'>    });
+</span><span class='line'>}
+</span><span class='line'>// log
+</span><span class='line'>2017-12-24 15:11:09.680454+0800 KVOTest[7325:373178] 2收到通知----&lt;NSThread: 0x60000026c880&gt;{number = 5, name = (null)}
+</span><span class='line'>2017-12-24 15:11:09.680454+0800 KVOTest[7325:373056] 3收到通知----&lt;NSThread: 0x60400006e800&gt;{number = 1, name = main}
+</span><span class='line'>2017-12-24 15:11:09.680488+0800 KVOTest[7325:373176] 0收到通知----&lt;NSThread: 0x60000026c040&gt;{number = 3, name = (null)}
+</span><span class='line'>2017-12-24 15:11:09.680491+0800 KVOTest[7325:373175] 1收到通知----&lt;NSThread: 0x60400027d440&gt;{number = 4, name = (null)}
+</span><span class='line'>2017-12-24 15:11:19.682627+0800 KVOTest[7325:373056] 发出通知----&lt;NSThread: 0x60400006e800&gt;{number = 1, name = main}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q2.UIView和CALayer的父类及关系？</h3>
+
+<ul>
+<li>UIView的父类是UIResponse，可以响应事件和手势</li>
+<li>CALyer的父类是NSObject，不可以响应事件和手势，更偏重内容绘制</li>
+<li>每个UIView都有自己的CALayer，UIView的frame只是返回CALayer的frame</li>
+<li>在 View显示的时候，UIView 做为 Layer 的 CALayerDelegate</li>
+</ul>
+
+
+<h3>Q3.手动设置UIView的bounds会怎样？</h3>
+
+<ul>
+<li>[UIview setBounds:]改变当前view相对于子view的坐标原点。</li>
+</ul>
+
+
+<pre><code class="`"> UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0,0, 375, 100)];
+    [view1 setBackgroundColor:[UIColor grayColor]];
+    [self.view addSubview:view1];
+
+    // 改变后，view1的原点在（0，-100）位置
+    self.view.bounds = CGRectMake(0, -100, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
+</code></pre>
+
+<p> <img src="/images/noSetBounds.png">
+ <img src="/images/setBounds.png"></p>
+
+<h3>Q4.在xib中创建一个全view大小的tableview，会不会被导航栏遮挡？为什么？</h3>
+
+<ul>
+<li>正常情况下，导航栏的透明度可影响视图是否被遮挡</li>
+</ul>
+
+
+<pre><code class="`"> // 设置不透明，self.view在导航栏下面展示，不遮挡
+ // 否则，self.view为全屏展示，会被导航栏遮挡
+ self.navigationController.navigationBar.translucent = NO;
+</code></pre>
+
+<ul>
+<li>在不考虑以上透明度的影响，tableview不被遮挡的同时还需要滑动时在不透明的导航栏中透出</li>
+</ul>
+
+
+<pre><code class="`">  // iOS10 以上系统自动设置，以下需要手动设置
+  [self.tableView setContentInset:UIEdgeInsetsMake(64, 0, 0, 0)];
+</code></pre>
+
+<h3>Q5.动态库和静态库的区别？系统库属于哪种？</h3>
+
+<ul>
+<li>静态库以.a和.framework作为文件后缀名，在使用时会被完全的copy一份到文件中，多次使用就包含多次拷贝文件，平时使用的第三方库大部分都是静态库，会使app的体积变大。</li>
+<li>动态库以.framework和.tbd(之前叫.dylib)作为文件后缀名，在使用时不会拷贝，由系统动态加载到内存中，只加载一次，多次使用可节省空间。如系统库UIKit等都是动态库。</li>
+<li>动态库制作可以包含其他静态库(.a/.framework)</li>
+<li>静态库制作可以包含其他静态库(.a/.framework）</li>
+</ul>
+
+
+<h3>Q6.为什么加载xib文件比纯代码耗时？</h3>
+
+<ul>
+<li>xib实质是xml文件，系统先要解析xml文件中的view及参数属性。</li>
+</ul>
+
+
+<h3>Q7.podfile.lock的作用？</h3>
+
+<ul>
+<li>在使用命令【pod install】以后会生成podfile.lock文件，这个文件中保存已经安装的Pods依赖库的版本。</li>
+<li>在多人协作时，特别是在podfile文件中没有指定依赖版本号时，如果有podfile.lock文件，其他人在执行【pod install】时就会和最开始的用户保持版本一致。如果没有podfile.lock文件，可能更新出不同的版本。所以podfile.lock需要加入版本管理。</li>
+</ul>
+
+
+<pre><code class="`"> // podfile 
+ platform :ios, '9.0'
+def shared_pods
+    pod 'FMDB' // 不指定版本，获取最新版本
+end
+target 'LittleNotes' do 
+    shared_pods
+end
+target 'LittleNotesWidget' do
+    shared_pods
+end
+</code></pre>
+
+<pre><code class="`"> //podfile.lock
+ PODS:
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
+DEPENDENCIES:
+  - FMDB
+SPEC CHECKSUMS:
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+PODFILE CHECKSUM: f5e7b7c51ca371b02aa28c158108e5f9ccdf3033
+COCOAPODS: 1.3.1
+</code></pre>
+
+<h3>Q8.如何优化应用启动时间？</h3>
+
+<ul>
+<li>冷启动：启动的应用不在后台运行，系统需要重新创建一个新进程分配给应用。App启动时间是从手指点击到调用applicationWillFinishLaunching结束</li>
+<li>热启动：应用已经运行，但是被后台挂起，比如按了home键。App的启动时间是从手指点击到调用applicationWillEnterForeground。</li>
+<li>测量应用启动时间：Xcode - Edit scheme - Auguments 配置环境变量DYLD_PRINT_STATISTICS为1.</li>
+</ul>
+
+
+<pre><code class="`"> Total pre-main time:  99.69 milliseconds (100.0%)
+         dylib loading time:  39.31 milliseconds (39.4%)
+        rebase/binding time:   7.57 milliseconds (7.5%)
+            ObjC setup time:  10.25 milliseconds (10.2%)
+           initializer time:  42.39 milliseconds (42.5%)
+           slowest intializers :
+             libSystem.B.dylib :  11.93 milliseconds (11.9%)
+   libBacktraceRecording.dylib :   7.14 milliseconds (7.1%)
+    libMainThreadChecker.dylib :  17.24 milliseconds (17.2%)
+</code></pre>
+
+<p> 影响启动时间因素：
+ - 动态库加载时间。一般应用会加载 100 到 400 个 dylib 文件，但大部分都是系统 dylib，它们会被预先计算和缓存起来，加载速度很快。但是另外集成的动态库应该尽量减少动态库的数量，或者将多个动态库合成一个。尽量保证将App现有的非系统级的动态库个数保证在6个以内。
+ - 指针修正时间。减少指针数量。就是减少App中的类、category、selector的数量。
+ - 初始化时间：使用+initialize代替+load方法，不要使用<strong>attribute</strong>((constructor)) 将方法显式标记为初始化器</p>
+
+<pre><code class="``">  load -&gt; attribute((constructor)) -&gt; main -&gt; initialize
+  + (void)initialize{
+    // 在类被第一次使用的时候调用
+  }
+  + (void)load{
+    // 在类被运行时加载时调用
+  }
+  __attribute((constructor)) void beforeMain(){
+  //是GCC的扩展语法（黑魔法），由它修饰过的函数，会在main函数之前调用
+  }
+</code></pre>
+
+<h3>Q9.dSYM是什么文件，有什么作用？</h3>
+
+<ul>
+<li>每次编译build/Archive App时，会生成一个同名的dSYM文件，dSYM 是保存 16 进制函数地址映射信息的中转文件.</li>
+<li>.dSYM中真正保存符号表数据的是DWARF文件。DWARF（DebuggingWith Arbitrary Record Formats），是ELF和Mach-O等文件格式中用来存储和处理调试信息的标准格式。</li>
+<li><p>.dSYM文件主要用于在发生崩溃时，根据崩溃内存地址查找到具体的崩溃位置。</p></li>
+<li><p>1.首先必须保.dSYM和.app文件是对应的</p></li>
+</ul>
+
+
+<pre><code class="`"> // 通过读取文件中的UUID
+ dwarfdump --uuid xx.app/xx (xx代表你的项目名)
+ dwarfdump --uuid xx.app.dSYM;
+</code></pre>
+
+<ul>
+<li>2.崩溃错误信息</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // 一般崩溃信息格式
+</span><span class='line'>appName 0x000000010011496c appName + 379244
+</span><span class='line'>
+</span><span class='line'> // 0x000000010011496c:崩溃内存地址，十六进制
+</span><span class='line'> 379244：地址偏移量，十进制</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>3.定位</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> // 终端运行
+</span><span class='line'> atos -arch arm64（1） -o "dSYM文件路径（2）" -l 0x00000001000B8000（3） 0x000000010011496c
+</span><span class='line'> 
+</span><span class='line'> // 1.处理器指令集，真机64位处理器为arm64，32位处理器为armv7或armv7s
+</span><span class='line'> // 2.将dSYM文件-右键-显示包内容，定位到DWARF目录下的app同名文件，如：/Users/zm/Desktop/ywh_dSYM/2.1.1/uclture.app.dSYM/Contents/Resources/DWARF/玩事
+</span><span class='line'> // 3.初始内存地址：将十六进制崩溃内存地址转化为十进制后，减去地址偏移量，获得十进制内存初始地址，再转化成十六进制
+</span><span class='line'> 如：0x000000010011496c（16）= 4296100204（10）
+</span><span class='line'> 初始地址（10） = 4296100204 - 379244 = 4295720960
+</span><span class='line'> 4295720960（10） = 1000B8000（16）
+</span><span class='line'> 
+</span><span class='line'> // 运行结果
+</span><span class='line'> -[HonorChatViewController tableView:heightForRowAtIndexPath:] (in ) (HonorChatViewController.m:193)</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q9.关于设置frame和autolayout布局的区别</h3>
+
+<ul>
+<li>手动设置frame，虽然也可以设置相对位置，不过需要大量的计算。</li>
+<li>设置autolayout不需要自己去计算</li>
+<li>直接设置frame在屏幕旋转等事件发生时需要重新适配计算位置，autolayout不需要</li>
+</ul>
+
+
+<h3>Q10.怎么避免NSTimer的循环引用？</h3>
+
+<ul>
+<li>1.不重复timer</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:NO];
+</span><span class='line'>  // timer在执行一次selector后自动调用invalidate方法，不会造成循环应用</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2.重复执行的timer</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(todoSomething) userInfo:nil repeats:YES];
+</span><span class='line'> // 重复的timer必须手动执行invalidate方法，且不能再dealloc中执行，因为timer强引用self，导致self不能释放，不会触发dealloc</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><ol>
+<li>invalidate方法的作用</li>
+</ol>
+</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  Stops the timer from ever firing again and requests its removal from its run loop.
+</span><span class='line'>This method is the only way to remove a timer from an NSRunLoop object. The NSRunLoop object removes its strong reference to the timer, either just before the invalidate method returns or at some later point.
+</span><span class='line'>If it was configured with target and user info objects, the receiver removes its strong references to those objects as well.
+</span><span class='line'>停止计时器再次触发，并请求将其从运行循环中删除。
+</span><span class='line'>该方法是从NSRunLoop对象中删除计时器的惟一方法。NSRunLoop对象删除了它对计时器的强引用，或者是在无效的方法返回之前，或者在稍后的某个时间点。
+</span><span class='line'>如果它配置了目标和用户信息对象，接收者也会删除对这些对象的强引用。</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q11.在block中使用_xxx的方式使用属性会不会循环引用？</h3>
+
+<ul>
+<li>会产生循环引用</li>
+<li>_name和self.name的区别是self.name直接调用属性的get方法，</li>
+<li>_name是调用类的实例变量。都会传入self被block强引用。</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>self.block = ^(id target) {
+</span><span class='line'>        _name = @"weekend";
+</span><span class='line'>    };
+</span><span class='line'>    self.block(self);</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q12.设计一个方法查询指定view上所有相同类型的子控件</h3>
+
+<ul>
+<li>1.需要想到view的子view的子view&hellip;中也要查找</li>
+<li>2.自定义继承的控件也需要查找</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 1.使用递归查找子view
+</span><span class='line'>// 2.自定义控件使用isKindOfClass
+</span><span class='line'>- (NSInteger)searchSubviewsCountByType:(NSString *)type atView:(UIView *)view{
+</span><span class='line'>   __block NSInteger count = 0;
+</span><span class='line'>    NSArray &lt;UIView*&gt; *subviews = view.subviews;
+</span><span class='line'>    [subviews enumerateObjectsUsingBlock:^(UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+</span><span class='line'>        NSInteger subCount = 0;
+</span><span class='line'>        if(obj.subviews.count != 0){
+</span><span class='line'>            subCount = subCount + [self searchSubviewsCountByType:type atView:obj];
+</span><span class='line'>        }else{
+</span><span class='line'>            Class targetClass = NSClassFromString(type);
+</span><span class='line'>            if([obj isKindOfClass:targetClass]){
+</span><span class='line'>                subCount++;
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        count = count + subCount;
+</span><span class='line'>    }];
+</span><span class='line'>    return count;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>// isKindOfClass:返回一个布尔值，该值表示接收者是给定类的实例还是继承该类的任何类的实例。
+</span><span class='line'>Returns a Boolean value that indicates whether the receiver is an instance of given class or an instance of any class that inherits from that class.
+</span><span class='line'>// isMemberOfClass:返回一个布尔值，该值表示接收者是否为给定类的实例。
+</span><span class='line'>Returns a Boolean value that indicates whether the receiver is an instance of a given class.</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q13.在主线程中新建一个串行队列，同步执行任务，任务在哪个线程中执行？为什么？</h3>
+
+<ul>
+<li>任务执行在主线程</li>
+<li>串行队列：队列中的任务按照顺序执行</li>
+<li>并行队列：队列中的任务同时执行</li>
+<li>同步：阻塞当前线程，直到任务执行完毕</li>
+<li>异步：不阻塞当前线程</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 同步串行：阻塞当前主线程，并顺序执行。不同的任务队列不会发生死锁。
+</span><span class='line'> dispatch_sync(dispatch_queue_create("serial", DISPATCH_QUEUE_SERIAL), ^{
+</span><span class='line'>        NSLog(@"currentThread:%@",[NSThread currentThread]);
+</span><span class='line'>    });
+</span><span class='line'>//log:
+</span><span class='line'>currentThread:&lt;NSThread: 0x604000076c40&gt;{number = 1, name = main}
+</span><span class='line'>
+</span><span class='line'>// 死锁：当前队列等待block中的任务执行完毕，block中任务阻塞主线程等待主线程队列中的任务执行完毕。
+</span><span class='line'>dispatch_sync(dispatch_get_main_queue(), ^{
+</span><span class='line'>        NSLog(@"currentThread:%@",[NSThread currentThread]);
+</span><span class='line'>    });</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Q14.在dealloc中写以下方法会输出什么？</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)dealloc{
+</span><span class='line'>    __weak typeof(self) weakSelf = self;
+</span><span class='line'>    NSLog(@"weakSelf:%@",weakSelf);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>运行崩溃：objc[1653]: Cannot form weak reference to instance (0x7fc3a8c0c920) of class TestViewController. It is possible that this object was over-released, or is in the process of deallocation.</li>
+<li>dealloc:释放被接收方占用的内存。
+接收到接收方的后续消息可能会产生一个错误，指示消息被发送到一个回收对象(前提是该回收的内存还没有被重用)。</li>
+<li>当前self在回收过程中，不允许弱引用</li>
+</ul>
+
+
+<h3>Q15.怎么在当前页面关闭的时候取消还没有下载完成的任务？</h3>
+
+<ul>
+<li>1.NSOperation</li>
+</ul>
+
+
+<pre><code class="`"> // 1.添加任务到队列
+  self.operationQueue = [NSOperationQueue new];
+    self.operationQueue.maxConcurrentOperationCount = 1;
+    for(int i = 0;i&lt;10;i++){
+        [self.operationQueue addOperationWithBlock:^{
+            sleep(1);
+            NSLog(@"i == %d",i);
+        }];
+    }
+  // 2. 挂起队列，不能暂停正在执行的任务
+   [self.operationQueue setSuspended:YES];
+  // 3. 取消挂起
+  [self.operationQueue setSuspended:No];
+  // 4.取消全部任务
+    [self.operationQueue cancelAllOperations];
+   // 5.取消单个任务
+    NSBlockOperation *blockOp = [NSBlockOperation blockOperationWithBlock:^{
+        // do something
+    }];
+    [self.operationQueue addOperation:blockOp];
+    [blockOp cancel];
+</code></pre>
+
+<ul>
+<li>2.GCD</li>
+</ul>
+
+
+<pre><code class="`"> // 1.添加任务到队列
+  dispatch_block_t gcdBlcok = dispatch_block_create(0, ^{
+        NSLog(@"to do something");
+    });
+    dispatch_async(self.queue, gcdBlcok);
+  // 2.取消任务
+  dispatch_block_cancel(gcdBlcok);
+  OR dispatch_cancel(gcdBlcok);
+  // 3.挂起队列
+  dispatch_suspend(self.queue);
+  // 4.取消挂起
+  dispatch_resume(self.queue);
+</code></pre>
+
+<ul>
+<li>3.页面关闭时，取消队列中还没有开始的任务。如果使用GCD需要将任务单独生成一个dispatch_block_t对象，如果是NSOperation，直接调用
+cancelAllOperations。</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Weekend</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-12-24T14:46:28+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>2:46 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/" data-via="" data-counturl="http://zhoumo199163.github.io/blog/2017/12/24/ios-q-and-a/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/" title="Next Post: 算法和数据结构">算法和数据结构 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2021/05/15/reactxue-xi-bi-ji/">React学习笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/05/19/linkmap/">LinkMap</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/12/24/ios-q-and-a/">iOS_Q&amp;A</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2021 - Weekend -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
