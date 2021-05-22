@@ -4,7 +4,7 @@
   <title><![CDATA[The Weekend Blog]]></title>
   <link href="http://zhoumo199163.github.io/atom.xml" rel="self"/>
   <link href="http://zhoumo199163.github.io/"/>
-  <updated>2021-05-18T22:23:53+08:00</updated>
+  <updated>2021-05-22T18:02:57+08:00</updated>
   <id>http://zhoumo199163.github.io/</id>
   <author>
     <name><![CDATA[Weekend]]></name>
@@ -12,6 +12,304 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[预编译指令]]></title>
+    <link href="http://zhoumo199163.github.io/blog/2021/05/22/yu-bian-yi-zhi-ling/"/>
+    <updated>2021-05-22T17:09:41+08:00</updated>
+    <id>http://zhoumo199163.github.io/blog/2021/05/22/yu-bian-yi-zhi-ling</id>
+    <content type="html"><![CDATA[<h3>预编译指令</h3>
+
+<p>以#开头的都是预编译指令，就是在正式编译之前，编译器做一些预处理的工作</p>
+
+<table>
+<thead>
+<tr>
+<th>  预编译指令   </th>
+<th> 含义  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> #define   </td>
+<td> 定义一个预处理宏 </td>
+</tr>
+<tr>
+<td> #undef  </td>
+<td>  取消宏的定义 </td>
+</tr>
+<tr>
+<td> #if   </td>
+<td> 编译预处理中的条件命令，相当于if语句 </td>
+</tr>
+<tr>
+<td> #ifdef   </td>
+<td> 判断某个宏是否被定义，若已定义，执行随后的语句 </td>
+</tr>
+<tr>
+<td> #ifndef  </td>
+<td> 与#ifdef相反，判断某个宏是否未被定义 </td>
+</tr>
+<tr>
+<td> #elif   </td>
+<td> 若#if, #ifdef, #ifndef或前面的#elif条件不满足，则执行#elif之后的语句，相当于else-if </td>
+</tr>
+<tr>
+<td> #else  </td>
+<td> 与#if, #ifdef, #ifndef对应, 若这些条件不满足，则执行#else之后的语句，相当于else </td>
+</tr>
+<tr>
+<td> #endif   </td>
+<td>  #if, #ifdef, #ifndef这些条件命令的结束标志.</td>
+</tr>
+<tr>
+<td> defined   </td>
+<td> 与#if, #elif配合使用，判断某个宏是否被定义 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>代码举例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 宏定义
+</span><span class='line'>#define ISOK
+</span><span class='line'>#define a 4
+</span><span class='line'>#define b 5
+</span><span class='line'>//取消宏定义
+</span><span class='line'>//#undef ISOK
+</span><span class='line'>
+</span><span class='line'>// #if后面必须跟一个判断条件，如果需要判断是否有某个宏定义需要使用defined
+</span><span class='line'>#if defined(ISOK)  //if
+</span><span class='line'>    NSLog(@"#if==true");
+</span><span class='line'>#elif (a==b)  // else if
+</span><span class='line'>    NSLog(@"#elif==true");
+</span><span class='line'>#else // else 
+</span><span class='line'>    NSLog(@"#else==true");
+</span><span class='line'>#endif
+</span><span class='line'>
+</span><span class='line'>    
+</span><span class='line'>#ifdef ISOK 
+</span><span class='line'>    NSLog(@"#ifdef:ISOK已有宏定义");
+</span><span class='line'>#else 
+</span><span class='line'>    NSLog(@"#ifdef:ISOK没有宏定义");
+</span><span class='line'>#endif
+</span><span class='line'>  
+</span><span class='line'>#ifndef ISOK
+</span><span class='line'>    NSLog(@"#ifndef:ISOK没有宏定义");
+</span><span class='line'>#else
+</span><span class='line'>    NSLog(@"#ifndef:ISOK已有宏定义");
+</span><span class='line'>#endif</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一般在iOS中用到预编译指令的地方：</p>
+
+<h4>1.调试代码：</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#ifdef DEBUG
+</span><span class='line'>// 调试代码 ，注意DEBUG宏是系统定义好的
+</span><span class='line'>#endif</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2.统一定义设备相关信息</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#define NavigationBar_HEIGHT 44
+</span><span class='line'>
+</span><span class='line'>#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+</span><span class='line'>#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+</span><span class='line'>
+</span><span class='line'>#define IOS_VERSION ［[UIDevice currentDevice] systemVersion] floatValue]
+</span><span class='line'>
+</span><span class='line'>#define CurrentSystemVersion ［UIDevice currentDevice] systemVersion]
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3.统一定义某个全局方法</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> *    @brief  正确获取主线程
+</span><span class='line'> */
+</span><span class='line'>#ifndef dispatch_main_async_safe
+</span><span class='line'>    #define dispatch_main_async_safe(block)\
+</span><span class='line'>        if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\
+</span><span class='line'>            (block());\
+</span><span class='line'>        } else {\
+</span><span class='line'>            dispatch_async(dispatch_get_main_queue(), block);\
+</span><span class='line'>        }
+</span><span class='line'>#endif
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> *    @brief  在Debug模式显示日志，Release模式关闭日志，普通输出
+</span><span class='line'> */
+</span><span class='line'>#ifdef DEBUG
+</span><span class='line'>#define Log( s, ... ) printf( "&lt;%s:(%d)&gt; %s %s\n\n", [[[NSString stringWithUTF8String:__FILE__] lastPathComponent] cStringUsingEncoding:NSUTF8StringEncoding], __LINE__,__func__, [[NSString stringWithFormat:(s), ##__VA_ARGS__] cStringUsingEncoding:NSUTF8StringEncoding])
+</span><span class='line'>#else
+</span><span class='line'>#define Log( s, ... )
+</span><span class='line'>#endif
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> *    @brief  防止block循环引用
+</span><span class='line'> */
+</span><span class='line'>#ifndef weakify
+</span><span class='line'>    #if TARGET_IPHONE_DEBUG
+</span><span class='line'>        #if __has_feature(objc_arc)
+</span><span class='line'>            #define weakify(object) @autoreleasepool{} __weak __typeof__(object) weak##_##object = object;
+</span><span class='line'>        #else
+</span><span class='line'>            #define weakify(object) @autoreleasepool{} __block __typeof__(object) block##_##object = object;
+</span><span class='line'>        #endif
+</span><span class='line'>    #else
+</span><span class='line'>        #if __has_feature(objc_arc)
+</span><span class='line'>            #define weakify(object) @try{} @finally{} {} __weak __typeof__(object) weak##_##object = object;
+</span><span class='line'>        #else
+</span><span class='line'>            #define weakify(object) @try{} @finally{} {} __block __typeof__(object) block##_##object = object;
+</span><span class='line'>        #endif
+</span><span class='line'>    #endif
+</span><span class='line'>#endif
+</span><span class='line'>
+</span><span class='line'>#ifndef strongify
+</span><span class='line'>    #if TARGET_IPHONE_DEBUG
+</span><span class='line'>        #if __has_feature(objc_arc)
+</span><span class='line'>            #define strongify(object) @autoreleasepool{} __typeof__(object) object = weak##_##object;
+</span><span class='line'>        #else
+</span><span class='line'>            #define strongify(object) @autoreleasepool{} __typeof__(object) object = block##_##object;
+</span><span class='line'>        #endif
+</span><span class='line'>    #else
+</span><span class='line'>        #if __has_feature(objc_arc)
+</span><span class='line'>            #define strongify(object) @try{} @finally{} __typeof__(object) object = weak##_##object;
+</span><span class='line'>        #else
+</span><span class='line'>            #define strongify(object) @try{} @finally{} __typeof__(object) object = block##_##object;
+</span><span class='line'>        #endif
+</span><span class='line'>    #endif
+</span><span class='line'>#endif
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> *    @brief rgb颜色转换（16进制-&gt;10进制）
+</span><span class='line'> */
+</span><span class='line'> #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) &gt;&gt; 16))/255.0 green:((float)((rgbValue & 0xFF00) &gt;&gt; 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> *    @brief 通知
+</span><span class='line'> */
+</span><span class='line'>#define POST_NOTIFY(__NAME, __OBJ, __INFO) [[NSNotificationCenter defaultCenter] postNotificationName:__NAME object:__OBJ userInfo:__INFO];
+</span><span class='line'>
+</span><span class='line'>#define LISTEN_NOTIFY(__NAME, __OBSERVER, __SELECTOR) [[NSNotificationCenter defaultCenter] addObserver:__OBSERVER selector:__SELECTOR name:__NAME object:nil];
+</span><span class='line'>
+</span><span class='line'>#define REMOVE_NOTIFY(__OBSERVER) [[NSNotificationCenter defaultCenter] removeObserver:__OBSERVER];</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[React学习笔记]]></title>
