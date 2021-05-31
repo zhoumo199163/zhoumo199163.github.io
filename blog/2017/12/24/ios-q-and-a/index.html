@@ -584,6 +584,56 @@ COCOAPODS: 1.3.1
 cancelAllOperations。</li>
 </ul>
 
+
+<h3>Q16 objectForKey和valueForKey的区别</h3>
+
+<p>首先， objectForKey:是一个NSDictionary方法，而valueForKey:是任何KVC投诉类所需的KVC协议方法 - 包括NSDictionary。</p>
+
+<p>文档提示NSDictionary实现其valueForKey:方法使用其objectForKey:实现。 换句话说<strong>- [NSDictionary valueForKey:]调用[NSDictionary objectForKey:]</strong>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/* Return the result of sending -objectForKey: to the receiver.
+</span><span class='line'>*/
+</span><span class='line'>- (nullable ObjectType)valueForKey:(NSString *)key;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>KVC协议仅适用于NSString *键，因此
+<strong>valueForKey:只接受NSString * （或子类）作为键</strong>，使用别的类型会崩溃；而objectForKey:接受任何可复制（符合NSCopying协议）对象作为密钥。</p></li>
+<li><p>如果valueForKey的key的第一个字符是@，@会被去掉</p></li>
+<li>valueForKey找不到value也不会崩溃</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>NSDictionary *dict = @{@"@theKey":@"@theValue"[NSNumber numberWithInt:1]:@[],@"theKey":@"theValue"};
+</span><span class='line'>
+</span><span class='line'>NSString *value1 = [dict objectForKey:@"@theKey”]; 
+</span><span class='line'>//value1=@theValue
+</span><span class='line'>
+</span><span class='line'>NSString *value2 = [dict valueForKey:@"@theKey”]; 
+</span><span class='line'>// value2=nil,虽然@被去掉了却无法取到theValue
+</span><span class='line'>    
+</span><span class='line'>NSArray *value3 = [dict objectForKey:[NSNumber numberWithInt:1]];  
+</span><span class='line'>// value3 = @[]
+</span><span class='line'>
+</span><span class='line'>NSArray *value4 =[dict valueForKey:@"1”]; 
+</span><span class='line'>// value4 = nil 如果这里的key是[NSNumber numberWithInt:1]，会报警告并且崩溃</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
