@@ -9,8 +9,12 @@
   <meta name="author" content="Weekend">
 
   
-  <meta name="description" content="一般情况下，App 的启动分为冷启动和热启动。 冷启动是指， App 点击启动前，它的进程不在系统里，需要系统新创建一个进程分配给它启动的情况。这是一次完整的启动过程。
-热启动是指 ，App 在冷启动后用户将 App 退后台，在 App 的进程还在系统里的情况下，用户重新启动进入 App 的过程， &hellip;">
+  <meta name="description" content="KVC (Key-Value-Coding) [TOC] 重要API： 1
+2
+// 默认返回YES，如不想使用KVC，可手动返回NO
+@property (class, readonly) BOOL accessInstanceVariablesDirectly; 1
+2
+- (void) &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +70,223 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2021/06/06/kvche-kvo/">KVC和KVO</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2021-06-06T20:25:33+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2021</span></span> <span class='time'>8:25 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>KVC (Key-Value-Coding)</h3>
+
+<p>[TOC]</p>
+
+<h4>重要API：</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 默认返回YES，如不想使用KVC，可手动返回NO
+</span><span class='line'>@property (class, readonly) BOOL accessInstanceVariablesDirectly;</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)setValue:(nullable id)value forKey:(NSString *)key;
+</span><span class='line'>- (void)setValue:(nullable id)value forKeyPath:(NSString *)keyPath;</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (nullable id)valueForKey:(NSString *)key;
+</span><span class='line'>- (nullable id)valueForKeyPath:(NSString *)keyPath;</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>setValue顺序如下：</h4>
+
+<ol>
+<li>查找是否有<code>-set&lt;Key&gt;:</code>。如果有，判断参数类型如果不是对象指针类型（不是NS开头）并且value是nil，则会调用<code>-setNilValueForKey:</code>方法，该方法会引起<code>NSInvalidArgumentException</code>，也就是崩溃，但是可以重写这个方法。NSNumber/NSValue类型会做一些转换。</li>
+<li>否则，当没有找到set方法时，如果accessinstancevariablesdirect返回YES，则查找<code>_&lt;key&gt;</code>， <code>_is&lt; key&gt;</code>, <code>&lt;key&gt;</code>，或<code>is&lt; key&gt;</code>的实例变量。如果找到了这样一个实例变量，并且它的类型是对象指针类型，结果将在实例变量中设置。如果实例变量的类型是其他类型，参照步骤1</li>
+<li>否则(没有找到访问方法或实例变量)，调用<code>-setValue:forUndefinedKey:</code>。<code>-setValue:forUndefinedKey</code>的默认实现会引发NSUndefinedKeyException，但是你可以在你的应用程序中重写它。</li>
+</ol>
+
+
+<p>举个栗子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>简单定义一个Object的结构
+</span><span class='line'>@interface KVCTest : NSObject{
+</span><span class='line'>    Rect rect;
+</span><span class='line'>    NSValue *value;
+</span><span class='line'>    int i;
+</span><span class='line'>    NSInteger age;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@property (nonatomic, copy) NSString *name;
+</span><span class='line'>
+</span><span class='line'>@end
+</span><span class='line'>调用
+</span><span class='line'> KVCTest *test = [KVCTest new];
+</span><span class='line'> // nil和非nil不会有问题
+</span><span class='line'>    [test setValue:nil forKey:@"name"];
+</span><span class='line'> // nil会引起崩溃
+</span><span class='line'>    [test setValue:nil forKey:@"rect"];
+</span><span class='line'> // 无问题
+</span><span class='line'>    [test setValue:@1 forKey:@"i"];
+</span><span class='line'> // 无问题
+</span><span class='line'>    [test setValue:@2 forKey:@"age"];
+</span><span class='line'>    
+</span><span class='line'> 如重写以下方法
+</span><span class='line'> -(void)setNilValueForKey:(NSString *)key{
+</span><span class='line'>    NSLog(@"不能将%@设成nil",key);
+</span><span class='line'>    // log：不能将rect设成nil
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>+(BOOL)accessInstanceVariablesDirectly{
+</span><span class='line'>    return NO;
+</span><span class='line'>}
+</span><span class='line'>如果设置为NO，实例变量都会不再寻找，会调用setValue:forUndefinedKey:方法，如果该方法没有被重新就会发生崩溃</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>valueForKey查找顺序</h4>
+
+<ol>
+<li>首先按照<code>-get&lt;Key&gt;， -&lt; Key&gt;，或-is&lt;Key&gt;</code>查找，如有则调用，如果结果是NSNumber可转换的类型，如int、bool则转换成NSNumber。</li>
+<li>如果没找到，继续查找<code>-countOf &lt;key&gt;</code>和<code>-indexIn &lt;key&gt; OfObject:</code>和<code>-objectIn &lt;key&gt; AtIndex:</code>或<code>&lt;Key&gt;AtIndexes</code>,如果找到了count方法和indexOf方法以及另外两个可能的方法中的至少一个，那么就会返回一个可以响应NSArray所有方法的代理集合(它是NSKeyValueArray，是NSArray的子类)，调用这个代理集合的方法，或者说给这个代理集合发送属于NSArray的方法，就会以<code>countOf&lt;Key&gt;</code>,<code>objectIn&lt;Key&gt;AtIndex</code>或<code>&lt;Key&gt;AtIndexes</code>这几个方法组合的形式调用。还有一个可选的<code>get&lt;Key&gt;:range:</code>方法。所以你想重新定义KVC的一些功能，你可以添加这些方法，需要注意的是你的方法名要符合KVC的标准命名方法，包括方法签名。</li>
+<li>如果上面的方法没有找到，那么会同时查找<code>countOf&lt;Key&gt;</code>，<code>enumeratorOf&lt;Key&gt;</code>,<code>memberOf&lt;Key&gt;</code>格式的方法。如果这三个方法都找到，那么就返回一个可以响应NSSet所的方法的代理集合，和上面一样，给这个代理集合发NSSet的消息，就会以<code>countOf&lt;Key&gt;</code>，<code>enumeratorOf&lt;Key&gt;</code>,<code>memberOf&lt;Key&gt;</code>组合的形式调用。</li>
+<li>否则，调用<code>accessinstancevariablesdirect</code>方法是否返回YES，如果是，则查找<code>_&lt;key&gt;</code>，<code>_is&lt; key&gt;</code>，<code>&lt;key&gt;</code>，或<code>is&lt; key&gt;</code>的实例变量,按此顺序。如果找到了，返回规则同步骤1，如果没找到，则调用<code>-valueForUndefinedKey:</code>,并引发崩溃。</li>
+</ol>
+
+
+<p>看文字不太好理解，举个栗子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> KVCTest *test = [KVCTest new];
+</span><span class='line'> id ar = [test valueForKey:@"numbers"];
+</span><span class='line'> NSLog(@"%@",NSStringFromClass([ar class]));
+</span><span class='line'> // ar是NSKeyValueArray类型，属于NSArray的子类
+</span><span class='line'>
+</span><span class='line'> NSLog(@"%lu",(unsigned long)[ar count]);
+</span><span class='line'>  // 会调用 countOf&lt;Key&gt;
+</span><span class='line'> -(NSUInteger)countOfNumbers{
+</span><span class='line'>    return self.count;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'> NSLog(@"%@",ar[0]);
+</span><span class='line'> // 会调用 -objectIn &lt;key&gt; AtIndex:
+</span><span class='line'> -(id)objectInNumbersAtIndex:(NSUInteger)index{ 
+</span><span class='line'>    return @(index * 2);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>NSInteger index =  [ar indexOfObject:@"123"];
+</span><span class='line'>// 会调用 -indexIn &lt;key&gt; OfObject:
+</span><span class='line'>-(NSUInteger)indexInNumbersOfObject:(id)object{
+</span><span class='line'>    return 0;
+</span><span class='line'>}
+</span><span class='line'> </span></code></pre></td></tr></table></div></figure>
+
+
+<h4>正确性验证</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)validateValue:(inout id __nullable * __nonnull)ioValue forKey:(NSString *)inKey error:(out NSError **)outError;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法的默认实现是去探索类里面是否有一个这样的方法：-(BOOL)validate<Key>:error:如果有这个方法，就调用这个方法来返回，没有的话就直接返回YES</p>
+
+<h4>KVC应用场景</h4>
+
+<ul>
+<li>使用KVC访问私有变量和属性，如UITextField中的placeHolderText</li>
+<li>Model和字典转换</li>
+<li>函数操作集合<code>@avg</code>， <code>@count</code> ， <code>@max</code> ， <code>@min</code> ，<code>@sum</code></li>
+<li>传递方法到容器中的每一个对象，如uppercaseString: 全部大写，length: 获取每个字符串长度</li>
+<li>对象运算，<code>@distinctUnionOfObjects：</code>返回去重后结果（无序），<code>@unionOfObjects</code>返回全部结果</li>
+</ul>
+
+
+<h3>KVO (Key-Value-Observing)</h3>
+
+<p>// 待补充</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2895,6 +3116,10 @@ cancelAllOperations。</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2021/06/06/kvche-kvo/">KVC和KVO</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2021/05/29/appqi-dong-su-du/">App启动速度</a>
       </li>
     
@@ -2908,10 +3133,6 @@ cancelAllOperations。</li>
     
       <li class="post">
         <a href="/blog/2018/05/19/linkmap/">LinkMap</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2017/12/31/suan-fa-he-shu-ju-jie-gou/">算法和数据结构</a>
       </li>
     
   </ul>
